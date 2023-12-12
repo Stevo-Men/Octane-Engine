@@ -21,4 +21,10 @@ public enum Direction {
     public int calculateVelocityY(int speed) {
         return velocityY * speed;
     }
+
+    @FunctionalInterface
+    public interface TriConsumer<T, U, V> {
+        void accept(T t, U u, V v);
+    }
+
 }

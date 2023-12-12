@@ -19,11 +19,16 @@ public class Npc  {
     public Npc(int x, int y) {
         this.x = x;
         this.y = y;
-        speed = 2;
+        speed = 1;
 
     }
 
     public void update() {
+       trajectory();
+
+    }
+
+    private void trajectory() {
         if (path1) {
             y += speed;
             if (y >= 500) {

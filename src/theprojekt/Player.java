@@ -27,6 +27,7 @@ public class Player extends ControllableEntity {
     int lightY;
     int lightWidth;
     int lightHeight;
+    Map<Direction, Direction.TriConsumer<Integer, Integer, Integer>> directionCalculations = new HashMap<>();
 
     public Player(MovementController controller) {
         super(controller);
@@ -105,30 +106,42 @@ public class Player extends ControllableEntity {
     public void drawPlayerLight(Canvas canvas) {
         Direction direction = getDirection();
 
+        int offsetX = 6;
+        int offsetY = 15 - 2;
+        int commonWidth = 20;
+        int commonHeight = 64;
 
-        if (direction == Direction.RIGHT) {
-            lightX = this.getX() + this.getWidth() - 16;
-            lightY = this.getY() + 15 - 2;
-            lightWidth = 64;
-            lightHeight = 20;
-        } else if (direction == Direction.LEFT) {
-            lightX = this.getX() - 48;
-            lightY = this.getY() + 15 - 2;
-            lightWidth = 64;
-            lightHeight = 20;
-        } else if (direction ==  Direction.DOWN) {
-            lightX = this.getX() + 6;
-            lightY = this.getY() + this.getHeight() + 1;
-            lightWidth = 20;
-            lightHeight = 64;
-        } else if (direction ==  Direction.UP) {
-            lightX = this.getX() + 6;
-            lightY = this.getY() - 50;
-            lightWidth = 20;
-            lightHeight = 64;
-        }
-        Color lightColor = new Color(255, 255, 255, 0); // Black with specified opacity
+
+        directionCalculations.put(Direction.RIGHT, (x, y, width) -> {
+            lightX = x + this.getWidth() - 16;
+            lightY = y + offsetY;
+            lightWidth = commonHeight;
+            lightHeight = commonWidth;
+        });
+        directionCalculations.put(Direction.LEFT, (x, y, width) -> {
+            lightX = x - 48;
+            lightY = y + offsetY;
+            lightWidth = commonHeight;
+            lightHeight = commonWidth;
+        });
+        directionCalculations.put(Direction.DOWN, (x, y, width) -> {
+            lightX = x + offsetX;
+            lightY = y + this.getHeight() + 1;
+            lightWidth = commonWidth;
+            lightHeight = commonHeight;
+        });
+        directionCalculations.put(Direction.UP, (x, y, width) -> {
+            lightX = x + offsetX;
+            lightY = y - 50;
+            lightWidth = commonWidth;
+            lightHeight = commonHeight;
+        });
+
+        directionCalculations.getOrDefault(direction, (x, y, width) -> {}).accept(this.getX(), this.getY(), this.getWidth());
+
+        Color lightColor = new Color(255, 255, 255, 147);
         canvas.drawRectangle(lightX, lightY, lightWidth, lightHeight, lightColor);
     }
+
 }
 

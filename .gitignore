@@ -4,6 +4,11 @@
 # Project exclude paths
 /out/
 src/bouncingball/
+src/footprint/
+src/tank/
+src/viking/
+src/movingrectangle/
+
 
 
 
