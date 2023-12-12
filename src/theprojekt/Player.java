@@ -23,10 +23,10 @@ public class Player extends ControllableEntity {
     private int currentAnimationFrame = 1;
     private int nextFrame = ANIMATION_SPEED;
 
-    int lightX;
-    int lightY;
-    int lightWidth;
-    int lightHeight;
+    private int lightX;
+    private int lightY;
+    private int lightWidth = 20;
+    private int lightHeight = 64;
     Map<Direction, Direction.TriConsumer<Integer, Integer, Integer>> directionCalculations = new HashMap<>();
 
     public Player(MovementController controller) {
@@ -108,39 +108,43 @@ public class Player extends ControllableEntity {
 
         int offsetX = 6;
         int offsetY = 15 - 2;
-        int commonWidth = 20;
-        int commonHeight = 64;
+
 
 
         directionCalculations.put(Direction.RIGHT, (x, y, width) -> {
             lightX = x + this.getWidth() - 16;
             lightY = y + offsetY;
-            lightWidth = commonHeight;
-            lightHeight = commonWidth;
+            axisLight(canvas,false);
         });
         directionCalculations.put(Direction.LEFT, (x, y, width) -> {
             lightX = x - 48;
             lightY = y + offsetY;
-            lightWidth = commonHeight;
-            lightHeight = commonWidth;
+            axisLight(canvas,false);
         });
         directionCalculations.put(Direction.DOWN, (x, y, width) -> {
             lightX = x + offsetX;
             lightY = y + this.getHeight() + 1;
-            lightWidth = commonWidth;
-            lightHeight = commonHeight;
+            axisLight(canvas,true);
         });
         directionCalculations.put(Direction.UP, (x, y, width) -> {
             lightX = x + offsetX;
             lightY = y - 50;
-            lightWidth = commonWidth;
-            lightHeight = commonHeight;
+            axisLight(canvas,true);
         });
 
         directionCalculations.getOrDefault(direction, (x, y, width) -> {}).accept(this.getX(), this.getY(), this.getWidth());
 
+
+    }
+
+    private void axisLight(Canvas canvas, boolean vertical) {
         Color lightColor = new Color(255, 255, 255, 147);
-        canvas.drawRectangle(lightX, lightY, lightWidth, lightHeight, lightColor);
+
+        if (vertical) {
+            canvas.drawRectangle(lightX, lightY, lightWidth, lightHeight, lightColor);
+        } else {
+            canvas.drawRectangle(lightX, lightY,lightHeight, lightWidth,  lightColor);
+        }
     }
 
 }
