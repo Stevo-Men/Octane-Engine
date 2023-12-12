@@ -37,8 +37,9 @@ public class theprojektGame extends Game {
         if (gamePad.isQuitPressed()) {
             stop();
         }
-        player.update();
+
         camera.update();
+        player.update();
 
 
         ArrayList<StaticEntity> killedElements = new ArrayList<>();
@@ -64,9 +65,9 @@ public class theprojektGame extends Game {
         for (Npc npc : npcs) {
             npc.draw(canvas, translatedX, translatedY);
         }
-
-        camera.drawDarkTint(canvas,0.5f);
         player.drawPlayerLight(canvas);
+        camera.drawDarkTint(canvas,0.5f);
+
         player.draw(canvas);
 
 

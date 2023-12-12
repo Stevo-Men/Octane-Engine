@@ -143,9 +143,21 @@ public class Player extends ControllableEntity {
         if (vertical) {
             canvas.drawRectangle(lightX, lightY, lightWidth, lightHeight, lightColor);
         } else {
-            canvas.drawRectangle(lightX, lightY,lightHeight, lightWidth,  lightColor);
+            canvas.drawRectangle(lightX, lightY, lightHeight, lightWidth, lightColor);
         }
+
+        Graphics2D graphics = canvas.getGraphics();
+
+        // Set the composite to subtract the light color from the dark tint
+        Composite originalComposite = graphics.getComposite();
+        AlphaComposite subtractiveComposite = AlphaComposite.getInstance(AlphaComposite.DST_OUT);
+        graphics.setComposite(subtractiveComposite);
+
+
+        // Restore the original composite
+        graphics.setComposite(originalComposite);
     }
+
 
 }
 
