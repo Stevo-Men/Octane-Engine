@@ -1,7 +1,7 @@
 .idea/
 .out/
-/bouncingball/
 
 # Project exclude paths
 /out/
+/src/bouncingball/
 
