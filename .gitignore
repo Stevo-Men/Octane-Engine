@@ -2,3 +2,4 @@
 .out/
 # Project exclude paths
 /out/
+/src/bouncingball/
