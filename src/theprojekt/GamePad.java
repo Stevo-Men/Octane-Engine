@@ -6,16 +6,16 @@ import java.awt.event.KeyEvent;
 
 public class GamePad extends MovementController {
 
-    private int quitKey = KeyEvent.VK_Q;
-    private int fireKey = KeyEvent.VK_SPACE;
+    private final int quitKey = KeyEvent.VK_Q;
+    private final int attackKey = KeyEvent.VK_SPACE;
 
     public GamePad() {
         bindKey(quitKey);
-        bindKey(fireKey);
+        bindKey(attackKey);
     }
 
-    public boolean isFirePressed() {
-        return isKeyPressed(fireKey);
+    public boolean isAttackPressed() {
+        return isKeyPressed(attackKey);
     }
 
     public boolean isQuitPressed() {

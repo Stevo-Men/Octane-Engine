@@ -14,6 +14,8 @@ public class theprojektGame extends Game {
     private Camera camera;
     private Npc npc;
     private ArrayList<Npc> npcs;
+    private HUD hud;
+    private ArrayList<Knife> knives;
     @Override
     protected void initialize() {
         gamePad = new GamePad();
@@ -25,6 +27,9 @@ public class theprojektGame extends Game {
         npcs = new ArrayList<>();
         npc = new Npc(400,200);
         npcs.add(new Npc(300,400));
+        hud = new HUD();
+        knives = new ArrayList<>();
+
 
         RenderingEngine.getInstance().getScreen().toggleFullscreen();
         RenderingEngine.getInstance().getScreen().hideCursor();
@@ -38,6 +43,10 @@ public class theprojektGame extends Game {
             stop();
         }
 
+        if (gamePad.isAttackPressed() && player.canThrow()) {
+            knives.add(player.throω());
+        }
+
         camera.update();
         player.update();
 
@@ -48,6 +57,9 @@ public class theprojektGame extends Game {
                 npc.update();
             }
 
+            for (Knife knife : knives) {
+                knife.update();
+            }
 
 
         CollidableRepository.getInstance().unregisterEntities(killedElements);
@@ -65,10 +77,13 @@ public class theprojektGame extends Game {
         for (Npc npc : npcs) {
             npc.draw(canvas, translatedX, translatedY);
         }
-        player.drawPlayerLight(canvas);
-        camera.drawDarkTint(canvas,0.5f);
+
+        for (Knife knife : knives) {
+            knife.draw(canvas);
+        }
 
         player.draw(canvas);
+        hud.draw(canvas);
 
 
 

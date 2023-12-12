@@ -39,7 +39,7 @@ public class CollidableRepository implements Iterable<StaticEntity> {
         return registeredEntities.size();
     }
 
-    private CollidableRepository() {
+    public CollidableRepository() {
         registeredEntities = new ArrayList<>();
     }
 

@@ -64,20 +64,7 @@ public class Camera {
         return worldY - y;
     }
 
-    public void drawDarkTint(Canvas canvas, float darkTintOpacity) {
-        // Apply a dark tint by setting the composite
-        Graphics2D graphics = canvas.getGraphics();
-        Composite originalComposite = graphics.getComposite();
-        AlphaComposite darkTintComposite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, darkTintOpacity);
-        graphics.setComposite(darkTintComposite);
 
-        // Draw a black rectangle with the specified opacity
-        graphics.setColor(Color.BLACK);
-        graphics.fillRect(translateX(x), translateY(y), 1000, 600);
-
-        // Restore the original composite
-        graphics.setComposite(originalComposite);
-    }
 
 }
 

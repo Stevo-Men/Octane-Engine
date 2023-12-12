@@ -3,6 +3,7 @@ package theprojekt;
 import doctrina.Canvas;
 import doctrina.CollidableRepository;
 import doctrina.MovableEntity;
+import doctrina.StaticEntity;
 
 import java.awt.*;
 
@@ -10,21 +11,31 @@ public class Npc  {
 
     private int x;
     private int y;
+    private int width;
+    private int height;
     private int speed;
     private boolean path1 = true;
     private boolean path2 = false;
     private boolean path3 = false;
     private boolean path4 = false;
+    private CollidableRepository collidableRepository;
+    private MovableEntity npcEntity;
 
     public Npc(int x, int y) {
         this.x = x;
         this.y = y;
         speed = 1;
+        width = 16;
+        height = 32;
 
     }
 
     public void update() {
        trajectory();
+
+    }
+
+    public void isKilled(Player player) {
 
     }
 
@@ -56,10 +67,13 @@ public class Npc  {
         }
     }
 
+    //make an interface of movable entity and make the npc implement it
+
     public void draw(Canvas canvas, int cameraX, int cameraY) {
-        canvas.drawRectangle(x - cameraX, y - cameraY, 10, 10, Color.YELLOW);
+        canvas.drawRectangle(x - cameraX, y - cameraY, width, height, Color.YELLOW);
         canvas.drawString(" " + x + " " + y,x - cameraX,y - cameraY,Color.RED);
     }
+
 
 
 }
