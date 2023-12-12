@@ -1,5 +1,9 @@
 package doctrina;
 
+import theprojekt.Camera;
+import theprojekt.Map;
+
+
 import java.awt.*;
 
 public abstract class StaticEntity {
@@ -8,6 +12,7 @@ public abstract class StaticEntity {
     protected int y;
     protected int width;
     protected int height;
+
 
     public abstract void draw(Canvas canvas);
 
@@ -26,6 +31,10 @@ public abstract class StaticEntity {
     }
 
     protected Rectangle getBounds() {
+        return new Rectangle(x, y, width, height);
+    }
+
+    protected Rectangle getBoundsNPC() {
         return new Rectangle(x, y, width, height);
     }
 

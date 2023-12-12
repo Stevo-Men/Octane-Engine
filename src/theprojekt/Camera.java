@@ -47,6 +47,7 @@ public class Camera {
     public void move(int dx, int dy) {
         this.x += dx;
         this.y += dy;
+
     }
 
     // Set the camera to a specific position

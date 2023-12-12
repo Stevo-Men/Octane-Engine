@@ -3,40 +3,45 @@ package theprojekt;
 import doctrina.Canvas;
 import doctrina.CollidableRepository;
 import doctrina.MovableEntity;
-import doctrina.StaticEntity;
 
 import java.awt.*;
 
-public class Npc  {
+public class Npc extends MovableEntity{
 
-    private int x;
-    private int y;
-    private int width;
-    private int height;
+
+
     private int speed;
     private boolean path1 = true;
     private boolean path2 = false;
     private boolean path3 = false;
     private boolean path4 = false;
-    private CollidableRepository collidableRepository;
-    private MovableEntity npcEntity;
+    private int health = 50;
+    private Knife knife;
+    private Map map;
+    private Camera camera;
+
 
     public Npc(int x, int y) {
         this.x = x;
         this.y = y;
         speed = 1;
-        width = 16;
-        height = 32;
-
+        setDimension(32, 32);
+        camera = new Camera();
+        CollidableRepository.getInstance().registerEntity(this);
     }
 
     public void update() {
-       trajectory();
+        super.update();
+
+
+        trajectory();
 
     }
 
-    public void isKilled(Player player) {
 
+
+    public void isTouched(Knife knife) {
+        this.health -= knife.damage;
     }
 
     private void trajectory() {
@@ -67,12 +72,30 @@ public class Npc  {
         }
     }
 
-    //make an interface of movable entity and make the npc implement it
+
+    public int getHealth() {
+        return health;
+    }
+
+
 
     public void draw(Canvas canvas, int cameraX, int cameraY) {
-        canvas.drawRectangle(x - cameraX, y - cameraY, width, height, Color.YELLOW);
-        canvas.drawString(" " + x + " " + y,x - cameraX,y - cameraY,Color.RED);
+        canvas.drawRectangle(getBoundsNPC().x - cameraX  , getBoundsNPC().y - cameraY, width, height, Color.YELLOW);
+        canvas.drawString(" " + getBoundsNPC().x + " " + getBoundsNPC().y ,x - cameraX,y - cameraY,Color.RED);
+        drawHealthEnemy(canvas,getBoundsNPC().x,getBoundsNPC().y);
+
     }
+
+
+    private void drawHealthEnemy(Canvas canvas, int cameraX, int cameraY) {
+        canvas.drawRectangle(x - cameraX, y - cameraY,50, 10, Color.RED);
+        canvas.drawRectangle(x - cameraX, y - cameraY,50, 10, Color.GREEN);
+    }
+    @Override
+    public void draw(Canvas canvas) {
+
+    }
+
 
 
 

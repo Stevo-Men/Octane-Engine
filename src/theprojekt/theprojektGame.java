@@ -16,6 +16,8 @@ public class theprojektGame extends Game {
     private ArrayList<Npc> npcs;
     private HUD hud;
     private ArrayList<Knife> knives;
+   public int translatedX;
+   public int translatedY;
     @Override
     protected void initialize() {
         gamePad = new GamePad();
@@ -37,6 +39,7 @@ public class theprojektGame extends Game {
 
 
 
+
     @Override
     protected void update() {
         if (gamePad.isQuitPressed()) {
@@ -50,7 +53,6 @@ public class theprojektGame extends Game {
         camera.update();
         player.update();
 
-
         ArrayList<StaticEntity> killedElements = new ArrayList<>();
 
             for (Npc npc : npcs) {
@@ -59,8 +61,27 @@ public class theprojektGame extends Game {
 
             for (Knife knife : knives) {
                 knife.update();
+                for (Npc npc : npcs) {
+                   if (knife.hitBoxIntersectWith(npc)) {
+                       killedElements.add(knife);
+                       npc.isTouched(knife);
+                       if (npc.getHealth() <= 0) {
+                           killedElements.add(npc);
+                       }
+                   }
+                }
             }
 
+
+
+        for (StaticEntity killedElement : killedElements) {
+            if (killedElement instanceof Npc) {
+                npcs.remove(killedElement);
+            }
+            if (killedElement instanceof Knife) {
+                knives.remove(killedElement);
+            }
+        }
 
         CollidableRepository.getInstance().unregisterEntities(killedElements);
     }
@@ -68,9 +89,9 @@ public class theprojektGame extends Game {
     @Override
     protected void draw(Canvas canvas) {
 
+        translatedX = camera.translateX(map.getX());
+        translatedY = camera.translateY(map.getY());
 
-        int translatedX = camera.translateX(map.getX());
-        int translatedY = camera.translateY(map.getY());
 
         map.draw(canvas, translatedX, translatedY);
 
@@ -87,5 +108,13 @@ public class theprojektGame extends Game {
 
 
 
+    }
+
+    public int getTranslatedX() {
+        return translatedX;
+    }
+
+    public int getTranslatedY() {
+        return translatedY;
     }
 }

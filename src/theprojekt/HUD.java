@@ -27,6 +27,7 @@ public class HUD extends StaticEntity {
 
     }
 
+
     @Override
     public void draw(Canvas canvas) {
         drawHealthBar(canvas,new Player(null));
