@@ -34,9 +34,6 @@ public abstract class StaticEntity {
         return new Rectangle(x, y, width, height);
     }
 
-    protected Rectangle getBoundsNPC() {
-        return new Rectangle(x, y, width, height);
-    }
 
     public int getX() {
         return x;

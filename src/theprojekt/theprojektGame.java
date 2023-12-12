@@ -56,7 +56,7 @@ public class theprojektGame extends Game {
         ArrayList<StaticEntity> killedElements = new ArrayList<>();
 
             for (Npc npc : npcs) {
-                npc.update();
+                npc.update(translatedX, translatedY, player);
             }
 
             for (Knife knife : knives) {
