@@ -5,3 +5,6 @@
 /out/
 src/bouncingball/
 
+git rm -r --cached src/bouncingball/
+git commit -m "Untrack src/bouncingball/"
+git push origin <master>
