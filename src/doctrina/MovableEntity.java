@@ -1,5 +1,7 @@
 package doctrina;
 
+import theprojekt.Npc;
+
 import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -12,7 +14,7 @@ public abstract class MovableEntity extends StaticEntity {
     private int lastX = Integer.MIN_VALUE;
     private int lastY = Integer.MIN_VALUE;
     private boolean moved = false;
-    protected Map<Direction, Direction.TriConsumer<Integer, Integer, Integer>> directionCalculations = new HashMap<>();
+
 
     public void update() {
         moved = false;
@@ -88,6 +90,7 @@ public abstract class MovableEntity extends StaticEntity {
         }
         return getHitBox().intersects(other.getBounds());
     }
+
 
     public void drawHitBox(Canvas canvas) {
         Rectangle rectangle = getHitBox();

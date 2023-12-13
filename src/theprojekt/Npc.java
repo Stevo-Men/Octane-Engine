@@ -30,33 +30,31 @@ public class Npc extends MovableEntity{
     private Knife knife;
     private Map map;
     private Camera camera;
-    private int cameraX;
-    private int cameraY;
+
 
 
 
     public Npc(int x, int y) {
         this.x = x;
         this.y = y;
-        speed = 1;
+        setSpeed(1);
         setDimension(32, 32);
         camera = new Camera();
-        cameraX = 0;
-        cameraY = 0;
         load();
-        CollidableRepository.getInstance().registerEntity(this);
+
     }
 
-    public void update(int translatedX, int translatedY, Player player) {
+    public void update(Player player) {
         super.update();
-        if (hasMoved()) {
-            x -= translatedX;
-            y -= translatedY;
-        }
+
+           x = camera.translateX(this.x);
+           y = camera.translateY(this.y);
+
+
+
 
         handleAnimationEnemy();
         chase(player);
-
     }
 
 
@@ -65,33 +63,33 @@ public class Npc extends MovableEntity{
         this.health -= knife.damage;
     }
 
-    private void trajectory() {
-        if (path1) {
-            move(Direction.RIGHT);
-            if (y >= 500) {
-                path1 = false;
-                path2 = true;
-            }
-        } else if (path2) {
-            move(Direction.DOWN);
-            if (x <= 100) {
-                path2 = false;
-                path3 = true;
-            }
-        } else if (path3) {
-            move(Direction.LEFT);
-            if (y <= 200) {
-                path3 = false;
-                path4 = true;
-            }
-        } else if (path4) {
-            move(Direction.UP);
-            if (x >= 400) {
-                path4 = false;
-                path1 = true;
-            }
-        }
-    }
+//    private void trajectory() {
+//        if (path1) {
+//            move(Direction.RIGHT);
+//            if (y >= 500) {
+//                path1 = false;
+//                path2 = true;
+//            }
+//        } else if (path2) {
+//            move(Direction.DOWN);
+//            if (x <= 100) {
+//                path2 = false;
+//                path3 = true;
+//            }
+//        } else if (path3) {
+//            move(Direction.LEFT);
+//            if (y <= 200) {
+//                path3 = false;
+//                path4 = true;
+//            }
+//        } else if (path4) {
+//            move(Direction.UP);
+//            if (x >= 400) {
+//                path4 = false;
+//                path1 = true;
+//            }
+//        }
+//    }
 
     public void chase(Player player) {
 
@@ -123,13 +121,15 @@ public class Npc extends MovableEntity{
     }
 
 
-
-    public void draw(Canvas canvas, int cameraX, int cameraY) {
-        canvas.drawRectangle(x - cameraX  , y - cameraY, width, height, new Color(255, 226, 40, 20));
-        canvas.drawRectangle(x, y, getBounds().width, getBounds().height, new Color(40, 255, 86, 20));
-        canvas.drawString(" " + x + " " + y ,x - cameraX,y - cameraY,Color.RED);
+    public void draw(Canvas canvas, Camera camera) {
+        int drawX = x - camera.translateX(this.x); // Adjusted for camera
+        int drawY = y - camera.translateX(this.y);  // Adjusted for camera
+        canvas.drawRectangle(x  , y, width, height, new Color(255, 226, 40, 20));
+        canvas.drawRectangle(getBounds().x, getBounds().y, this.getBounds().width, getBounds().height, new Color(40, 255, 86, 20));
+        canvas.drawString(" " + x + " " + y ,x ,y ,Color.RED);
         drawHealthEnemy(canvas,x,y);
-        drawEnemyImage(canvas, x - cameraX,y - cameraY);
+        drawEnemyImage(canvas, x,y);
+
     }
 
 
@@ -192,12 +192,6 @@ public class Npc extends MovableEntity{
 
         if (frames != null) {
             canvas.drawImage(frames[currentAnimationFrame], x, y);
-            //  System.out.println("Player Coordinates: x = " + (int) this.position.x + ", y = " + (int) this.position.y);
-
         }
     }
-
-
-
-
 }

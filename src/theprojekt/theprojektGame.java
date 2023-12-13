@@ -16,8 +16,7 @@ public class theprojektGame extends Game {
     private ArrayList<Npc> npcs;
     private HUD hud;
     private ArrayList<Knife> knives;
-   public int translatedX;
-   public int translatedY;
+
     @Override
     protected void initialize() {
         gamePad = new GamePad();
@@ -27,7 +26,6 @@ public class theprojektGame extends Game {
         map.load();
         camera = new Camera();
         npcs = new ArrayList<>();
-        npc = new Npc(400,200);
         npcs.add(new Npc(300,400));
         hud = new HUD();
         knives = new ArrayList<>();
@@ -56,7 +54,7 @@ public class theprojektGame extends Game {
         ArrayList<StaticEntity> killedElements = new ArrayList<>();
 
             for (Npc npc : npcs) {
-                npc.update(translatedX, translatedY, player);
+                npc.update(player);
             }
 
             for (Knife knife : knives) {
@@ -89,14 +87,14 @@ public class theprojektGame extends Game {
     @Override
     protected void draw(Canvas canvas) {
 
-        translatedX = camera.translateX(map.getX());
-        translatedY = camera.translateY(map.getY());
+        int translatedX = camera.translateX(map.getX());
+        int translatedY = camera.translateY(map.getY());
 
 
         map.draw(canvas, translatedX, translatedY);
 
         for (Npc npc : npcs) {
-            npc.draw(canvas, translatedX, translatedY);
+            npc.draw(canvas,camera);
         }
 
         for (Knife knife : knives) {
@@ -108,13 +106,5 @@ public class theprojektGame extends Game {
 
 
 
-    }
-
-    public int getTranslatedX() {
-        return translatedX;
-    }
-
-    public int getTranslatedY() {
-        return translatedY;
     }
 }
