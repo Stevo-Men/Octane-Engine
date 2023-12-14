@@ -11,27 +11,34 @@ public class Camera {
     private GamePad gamePad;
     private Rectangle rectangle;
     private Screen screen;
+    private Player player;
+    private Map map;
 
     public Camera() {
         this.x = 0;
         this.y = 0;
         gamePad = new GamePad();
+        map = new Map();
         screen = new Screen();
     }
 
+//    public void update() {
+//        if (gamePad.isDownPressed()) {
+//            move(0, -1);
+//        }
+//        if (gamePad.isUpPressed()) {
+//            move(0, 1);
+//        }
+//        if (gamePad.isRightPressed()) {
+//            move(-1, 0);
+//        }
+//        if (gamePad.isLeftPressed()) {
+//            move(1, 0);
+//        }
+//    }
+
     public void update() {
-        if (gamePad.isDownPressed()) {
-            move(0, -1);
-        }
-        if (gamePad.isUpPressed()) {
-            move(0, 1);
-        }
-        if (gamePad.isRightPressed()) {
-            move(-1, 0);
-        }
-        if (gamePad.isLeftPressed()) {
-            move(1, 0);
-        }
+
     }
 
 

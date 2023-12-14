@@ -17,8 +17,8 @@ public class VisualEffect {
 
     private int lightX;
     private int lightY;
-    private int lightWidth = 20;
-    private int lightHeight = 64;
+    private int lightWidth = 25;
+    private int lightHeight = 70;
     protected Map<Direction, Direction.TriConsumer<Integer, Integer, Integer>> directionCalculations = new HashMap<>();
 
     public VisualEffect(Player player) {
@@ -35,13 +35,13 @@ public class VisualEffect {
         Direction direction = player.getDirection();
 
         directionCalculations.put(Direction.RIGHT, (x, y, width) -> {
-            lightX = x + player.getWidth() - 16;
+            lightX = x + player.getWidth() - 12;
             lightY = y + 15 - 2;
             addDarkTint(canvas, 0.6f,false);
         });
 
         directionCalculations.put(Direction.LEFT, (x, y, width) -> {
-            lightX = x - 48;
+            lightX = x - 56;
             lightY = y + 15 - 2;
             addDarkTint(canvas, 0.6f,false);
         });
@@ -53,8 +53,8 @@ public class VisualEffect {
         });
 
         directionCalculations.put(Direction.UP, (x, y, width) -> {
-            lightX = x + 6;
-            lightY = y - 50;
+            lightX = x + 4;
+            lightY = y - 58;
             addDarkTint(canvas, 0.6f,true);
         });
 

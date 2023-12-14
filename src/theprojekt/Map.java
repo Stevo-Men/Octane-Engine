@@ -10,8 +10,8 @@ public class Map {
 
     private static final String MAP_PATH = "images/sewer_map.png";
     private Image background;
-    private int x; // X-coordinate of the map
-    private int y; // Y-coordinate of the map
+    public int x; // X-coordinate of the map
+    public int y; // Y-coordinate of the map
     private int drawX,drawY;
 
     public void load() {
