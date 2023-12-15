@@ -15,14 +15,16 @@ import java.util.Map;
 public class Player extends ControllableEntity {
 
     private static final String SPRITE_PATH = "images/player2.png";
-    private static final int ANIMATION_SPEED = 8;
+
     protected Map<Direction, Image[]> directionFramesMap = new HashMap<>();
 
     private BufferedImage spriteSheet;
     private int currentAnimationFrame = 1;
+    private final int ANIMATION_SPEED = 8;
     private int nextFrame = ANIMATION_SPEED;
     Camera camera;
     private VisualEffect visualEffect;
+    private AnimatedEntity animatedEntity;
 
     public int playerHealth = 100;
     private int cooldown = 0;
@@ -32,9 +34,11 @@ public class Player extends ControllableEntity {
         super(controller);
         setDimension(32, 32);
         setSpeed(2);
-        load();
+
         camera = new Camera();
         visualEffect = new VisualEffect(this);
+        animatedEntity = new AnimatedEntity(SPRITE_PATH, x, y, 32, 32, 2);
+        load();
     }
 
     public Knife throω() {
@@ -49,9 +53,9 @@ public class Player extends ControllableEntity {
     @Override
     public void update() {
         super.update();
-        moveWithController();
-        handleAnimation();
 
+        moveWithController();
+        animatedEntity.update(this);
 
         cooldown--;
         if (cooldown < 0) {
@@ -61,61 +65,22 @@ public class Player extends ControllableEntity {
 
     @Override
     public void draw(Canvas canvas) {
-        drawPlayerImage(canvas, 0, 0);
+        animatedEntity.drawCharacterImage(canvas, 0, 0, this);;
         visualEffect.drawPlayerLight(canvas);
 
         canvas.drawString(" " + x + " " + y, x, y, Color.RED);
     }
 
     private void load() {
-        loadSpriteSheet();
-        loadAnimationFrames();
+        animatedEntity.loadSpriteSheet(SPRITE_PATH);
+
     }
 
-    private void loadSpriteSheet() {
-        try {
-            spriteSheet = ImageIO.read(this.getClass().getClassLoader().getResourceAsStream(SPRITE_PATH));
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
-    }
 
-    protected void loadAnimationFrames() {
-        directionFramesMap.put(Direction.DOWN, loadFrames(0));
-        directionFramesMap.put(Direction.LEFT, loadFrames(32));
-        directionFramesMap.put(Direction.RIGHT, loadFrames(64));
-        directionFramesMap.put(Direction.UP, loadFrames(96));
-    }
 
-    protected Image[] loadFrames(int startY) {
-        Image[] frames = new Image[3];
-        frames[0] = spriteSheet.getSubimage(0, startY, width, height);
-        frames[1] = spriteSheet.getSubimage(32, startY, width, height);
-        frames[2] = spriteSheet.getSubimage(64, startY, width, height);
-        return frames;
-    }
 
-    protected void handleAnimation() {
-        if (hasMoved()) {
-            --nextFrame;
-            if (nextFrame == 0) {
-                ++currentAnimationFrame;
-                if (currentAnimationFrame >= directionFramesMap.get(getDirection()).length) {
-                    currentAnimationFrame = 0;
-                }
-                nextFrame = ANIMATION_SPEED;
-            }
-        } else {
-            currentAnimationFrame = 1;
-        }
-    }
 
-    protected void drawPlayerImage(Canvas canvas, int translatedX, int translatedY) {
-        Direction direction = getDirection();
-        Image[] frames = directionFramesMap.get(direction);
 
-        if (frames != null) {
-            canvas.drawImage(frames[currentAnimationFrame], x - translatedX, y - translatedY);
-        }
-    }
+
+
 }
