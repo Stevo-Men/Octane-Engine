@@ -48,6 +48,9 @@ public class Knife extends MovableEntity {
         }*/
     }
 
+    public boolean isOutOfBounds() {
+        return x < 16 || x > 1008 || y < 16 || y > 1008;
+    }
 
     @Override
     public void draw(Canvas canvas) {
