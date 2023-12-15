@@ -1,8 +1,5 @@
 package doctrina;
 
-import theprojekt.Camera;
-import theprojekt.Map;
-
 
 import java.awt.*;
 
@@ -31,7 +28,7 @@ public abstract class StaticEntity {
     }
 
 
-    protected Rectangle getBounds() {
+    public Rectangle getBounds() {
         return new Rectangle(x, y, width, height);
     }
 

@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AnimatedEntity {
+public class AnimatedEntity extends MovableEntity{
 
     private BufferedImage spriteSheet;
     private int currentAnimationFrame = 1;
@@ -27,12 +27,9 @@ public class AnimatedEntity {
     protected int speed;
     private Player player;
 
-    public AnimatedEntity(String spritePath, int x, int y, int width, int height, int speed) {
-        this.x = x;
-        this.y = y;
+    public AnimatedEntity(String spritePath,  int width, int height) {
         this.width = width;
         this.height = height;
-        this.speed = speed;
         loadSpriteSheet(spritePath);
     }
 
@@ -84,10 +81,14 @@ public class AnimatedEntity {
         }
     }
 
-    public void update(MovableEntity entity ) {
+    public void update(MovableEntity entity) {
         handleAnimation(entity);
-       loadAnimationFrames();
+        loadAnimationFrames();
     }
 
-    // Getters and setters as needed
+
+    @Override
+    public void draw(Canvas canvas) {
+
+    }
 }

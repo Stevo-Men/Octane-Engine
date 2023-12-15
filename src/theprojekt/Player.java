@@ -1,9 +1,7 @@
 package theprojekt;
 
+import doctrina.*;
 import doctrina.Canvas;
-import doctrina.ControllableEntity;
-import doctrina.Direction;
-import doctrina.MovementController;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -37,7 +35,7 @@ public class Player extends ControllableEntity {
 
         camera = new Camera();
         visualEffect = new VisualEffect(this);
-        animatedEntity = new AnimatedEntity(SPRITE_PATH, x, y, 32, 32, 2);
+        animatedEntity = new AnimatedEntity(SPRITE_PATH,this.getWidth(),this.getHeight());
         load();
     }
 
@@ -68,6 +66,8 @@ public class Player extends ControllableEntity {
         animatedEntity.drawCharacterImage(canvas, 0, 0, this);;
         visualEffect.drawPlayerLight(canvas);
 
+
+        canvas.drawRectangle(this.getBounds().x,this.getBounds().y,this.getBounds().width,this.getBounds().height,Color.RED);
         canvas.drawString(" " + x + " " + y, x, y, Color.RED);
     }
 

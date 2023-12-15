@@ -30,6 +30,16 @@ public class Canvas {
         graphics.drawString(text, x, y);
     }
 
+    public void drawHealthNPC(int x, int y, int width, int height, Paint paint) {
+        graphics.setPaint(paint);
+        graphics.fillRoundRect(x, y, width, height, 10, 10);
+    }
+
+    public void drawDetectionRect(Rectangle rectangle, Paint paint) {
+        graphics.setPaint(paint);
+        graphics.drawRect(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
+    }
+
     public void drawImage(Image image, int x, int y) {
         graphics.drawImage(image, x, y, null);
     }

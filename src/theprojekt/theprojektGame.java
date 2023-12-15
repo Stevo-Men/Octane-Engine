@@ -20,7 +20,7 @@ public class theprojektGame extends Game {
     private HUD hud;
     private ArrayList<Knife> knives;
     private BlockadeMap blockadeMap;
-    private Blockade blockade;
+
 
 
 
@@ -28,7 +28,7 @@ public class theprojektGame extends Game {
     protected void initialize() {
         gamePad = new GamePad();
         player = new Player(gamePad);
-        player.teleport(200, 200);
+        player.teleport(400, 400);
         map = new Map();
         map.load();
         camera = new Camera();
@@ -38,6 +38,7 @@ public class theprojektGame extends Game {
         knives = new ArrayList<>();
         blockadeMap = new BlockadeMap(0,0);
         blockadeMaps = new ArrayList<>();
+
 
 
         RenderingEngine.getInstance().getScreen().toggleFullscreen();
@@ -60,11 +61,14 @@ public class theprojektGame extends Game {
 
         player.update();
         camera.update();
-
+        hud.update(player);
 
         ArrayList<StaticEntity> killedElements = new ArrayList<>();
 
             for (Npc npc : npcs) {
+                if (npc.canAttack(player)) {
+                    npc.attack(player);
+                }
                 npc.update(player);
             }
 

@@ -1,9 +1,7 @@
 package theprojekt;
 
+import doctrina.*;
 import doctrina.Canvas;
-import doctrina.CollidableRepository;
-import doctrina.Direction;
-import doctrina.MovableEntity;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -27,6 +25,13 @@ public class Npc extends MovableEntity{
     private boolean path3 = false;
     private boolean path4 = false;
     private int health = 50;
+    private int cooldown = 0;
+    private int parameterX;
+    private int parameterY;
+    private int parameterWidth = 130;
+    private int parameterHeight = 200;
+    protected java.util.Map<Direction, Direction.TriConsumer<Integer, Integer, Integer>> directionCalculations = new HashMap<>();
+
     private Knife knife;
     private Map map;
     private Camera camera;
@@ -34,9 +39,11 @@ public class Npc extends MovableEntity{
 
 
 
+
     public Npc(int x, int y) {
         this.x = x;
         this.y = y;
+
         setSpeed(1);
         setDimension(32, 32);
         camera = new Camera();
@@ -52,12 +59,34 @@ public class Npc extends MovableEntity{
 
 
 
-
+        cooldown--;
+        if (cooldown < 0) {
+            cooldown = 0;
+        }
         handleAnimationEnemy();
-        chase(player);
+
+
+        if (isChasing(player)) {
+            chase(player);
+        }
     }
 
 
+
+    public boolean isChasing(Player player) {
+        return parameterDirection().intersects(player.getBounds());
+    }
+
+
+
+    public boolean canAttack(Player player) {
+        return (this.getBounds().intersects(player.getBounds()) && cooldown == 0);
+    }
+
+    public void attack(Player player) {
+        cooldown = 25;
+        player.playerHealth -= 10;
+    }
 
     public void isTouched(Knife knife) {
         this.health -= knife.damage;
@@ -129,13 +158,14 @@ public class Npc extends MovableEntity{
         canvas.drawString(" " + x + " " + y ,x ,y ,Color.RED);
         drawHealthEnemy(canvas,x,y);
         drawEnemyImage(canvas, x,y);
-
+      //  parameterDirection(canvas);
     }
 
 
     private void drawHealthEnemy(Canvas canvas, int cameraX, int cameraY) {
-        canvas.drawRectangle(x - cameraX, y - cameraY,50, 10, Color.RED);
-        canvas.drawRectangle(x - cameraX, y - cameraY,50, 10, Color.GREEN);
+        canvas.drawHealthNPC(x-7,y-1,52,8,Color.BLACK);
+        canvas.drawHealthNPC(x-6,y,50,6,Color.RED);
+        canvas.drawHealthNPC(x-6 , y ,this.health, 6, Color.GREEN);
     }
     @Override
     public void draw(Canvas canvas) {
@@ -194,4 +224,51 @@ public class Npc extends MovableEntity{
             canvas.drawImage(frames[currentAnimationFrame], x, y);
         }
     }
+
+    public Rectangle parameterDirection() {
+
+        Direction direction = this.getDirection();
+
+        directionCalculations.put(Direction.RIGHT, (x, y, width) -> {
+            parameterX = x + 10;
+            parameterY = y - 90;
+            detectionParameter(parameterX, parameterY, true);
+        });
+
+        directionCalculations.put(Direction.LEFT, (x, y, width) -> {
+            parameterX = x - 110;
+            parameterY = y - 80;
+            detectionParameter(parameterX, parameterY, true);
+        });
+
+        directionCalculations.put(Direction.DOWN, (x, y, width) -> {
+            parameterX = x - 80;
+            parameterY = y + 8;
+            detectionParameter(parameterX, parameterY, false);
+        });
+
+        directionCalculations.put(Direction.UP, (x, y, width) -> {
+            parameterX = x - 75;
+            parameterY = y - 100;
+            detectionParameter(parameterX, parameterY, false);
+        });
+
+        directionCalculations.getOrDefault(direction, (x, y, width) -> {
+        }).accept(this.getX(), this.getY(), this.getWidth());
+
+        return new Rectangle(parameterX, parameterY, parameterWidth, parameterHeight) {
+        };
+    }
+
+    public void detectionParameter(int x, int y, boolean horizontal) {
+        if (horizontal) {
+           Rectangle horizontalParameter = new Rectangle(x, y, parameterWidth, parameterHeight);
+           // canvas.drawDetectionRect(horizontalParameter, new Color(99, 144, 255, 137));
+        } else {
+           Rectangle verticalParameter =  new Rectangle(x, y, parameterHeight, parameterWidth);
+          //  canvas.drawDetectionRect(verticalParameter , new Color(99, 144, 255, 137));
+        }
+    }
+
+
 }

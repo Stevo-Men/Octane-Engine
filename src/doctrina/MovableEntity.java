@@ -1,12 +1,12 @@
 package doctrina;
 
 import theprojekt.Npc;
-
+import doctrina.Collision;
 import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class MovableEntity extends StaticEntity {
+public abstract class MovableEntity extends StaticEntity   {
 
     private int speed = 1;
     private Direction direction = Direction.UP;
