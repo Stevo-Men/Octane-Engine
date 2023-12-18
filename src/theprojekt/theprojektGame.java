@@ -2,16 +2,14 @@ package theprojekt;
 
 import doctrina.Canvas;
 import doctrina.*;
-import tank.Brick;
-import tank.Missile;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class theprojektGame extends Game {
     private Player player;
     private GamePad gamePad;
+
     private Map map;
     private Camera camera;
     private Npc npc;
@@ -20,8 +18,7 @@ public class theprojektGame extends Game {
     private HUD hud;
     private ArrayList<Knife> knives;
     private BlockadeMap blockadeMap;
-
-
+    private boolean paused = false;
 
 
     @Override
@@ -33,12 +30,11 @@ public class theprojektGame extends Game {
         map.load();
         camera = new Camera();
         npcs = new ArrayList<>();
-        npcs.add(new Npc(300,400));
+        npcs.add(new Npc(200, 200));
         hud = new HUD();
         knives = new ArrayList<>();
-        blockadeMap = new BlockadeMap(0,0);
+        blockadeMap = new BlockadeMap(0, 0);
         blockadeMaps = new ArrayList<>();
-
 
 
         RenderingEngine.getInstance().getScreen().toggleFullscreen();
@@ -46,18 +42,16 @@ public class theprojektGame extends Game {
     }
 
 
-
-
     @Override
     protected void update() {
+
         if (gamePad.isQuitPressed()) {
             stop();
         }
 
         if (gamePad.isAttackPressed() && player.canThrow()) {
-            knives.add(player.throω());
+            knives.add(player.throwKnife());
         }
-
 
         player.update();
         camera.update();
@@ -65,32 +59,29 @@ public class theprojektGame extends Game {
 
         ArrayList<StaticEntity> killedElements = new ArrayList<>();
 
+        for (Npc npc : npcs) {
+            if (npc.canAttack(player)) {
+                npc.attack(player);
+            }
+            npc.update(player);
+        }
+
+        for (Knife knife : knives) {
+            if (knife.isOutOfBounds() || !knife.isFlying()) {
+                killedElements.add(knife);
+            }
+            knife.update();
+
             for (Npc npc : npcs) {
-                if (npc.canAttack(player)) {
-                    npc.attack(player);
-                }
-                npc.update(player);
-            }
-
-            for (Knife knife : knives) {
-                if (knife.isOutOfBounds()) {
+                if (knife.hitBoxIntersectWith(npc)) {
                     killedElements.add(knife);
+                    npc.isTouched(knife);
+                    if (npc.getHealth() <= 0) {
+                        killedElements.add(npc);
+                    }
                 }
-                knife.update();
-
-                for (Npc npc : npcs) {
-                   if (knife.hitBoxIntersectWith(npc)) {
-                       killedElements.add(knife);
-                       npc.isTouched(knife);
-                       if (npc.getHealth() <= 0) {
-                           killedElements.add(npc);
-                       }
-                   }
-                }
-
             }
-
-
+        }
 
         for (StaticEntity killedElement : killedElements) {
             if (killedElement instanceof Npc) {
@@ -100,9 +91,39 @@ public class theprojektGame extends Game {
                 knives.remove(killedElement);
             }
         }
-
         CollidableRepository.getInstance().unregisterEntities(killedElements);
+
+
+
+
+        if (gamePad.isPausePressed() ) {
+            isPaused();
+            try {
+
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            paused = false;
+
+        }
+
     }
+
+
+
+
+    public void isPaused() {
+         paused = true;
+    }
+
+
+
+
+
+
+
+
 
     @Override
     protected void draw(Canvas canvas) {
@@ -127,7 +148,11 @@ public class theprojektGame extends Game {
         }
 
         player.draw(canvas);
+        hud.hudTexture(canvas,player);
         hud.draw(canvas);
+
+
+
 
 
 

@@ -46,7 +46,6 @@ public class BlockadeMap extends StaticEntity {
     public void draw(Canvas canvas) {
         for (StaticEntity blockade : blockadeMaps) {
             blockade.draw(canvas);
-            canvas.drawRectangle(this, Color.RED);
         }
 
     }

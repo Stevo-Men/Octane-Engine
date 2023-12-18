@@ -18,22 +18,15 @@ public class Npc extends MovableEntity{
     private BufferedImage spriteSheet;
     private int currentAnimationFrame = 1;
     private int nextFrame = ANIMATION_SPEED;
-
-    private int speed;
-    private boolean path1 = true;
-    private boolean path2 = false;
-    private boolean path3 = false;
-    private boolean path4 = false;
+    private int pathNumber = 1;
     private int health = 50;
     private int cooldown = 0;
+    private int pathCooldown = 0;
     private int parameterX;
     private int parameterY;
     private int parameterWidth = 130;
     private int parameterHeight = 200;
     protected java.util.Map<Direction, Direction.TriConsumer<Integer, Integer, Integer>> directionCalculations = new HashMap<>();
-
-    private Knife knife;
-    private Map map;
     private Camera camera;
 
 
@@ -43,7 +36,6 @@ public class Npc extends MovableEntity{
     public Npc(int x, int y) {
         this.x = x;
         this.y = y;
-
         setSpeed(1);
         setDimension(32, 32);
         camera = new Camera();
@@ -60,77 +52,65 @@ public class Npc extends MovableEntity{
 
 
         cooldown--;
+        pathCooldown--;
         if (cooldown < 0) {
             cooldown = 0;
         }
+
+
+
         handleAnimationEnemy();
 
+            if (isChasing(player)) {
+                chase(player);
+            } else {
+                trajectory();
+            }
 
-        if (isChasing(player)) {
-            chase(player);
+    }
+
+
+
+
+
+    private void trajectory() {
+        if (pathNumber == 1) {
+            move(Direction.RIGHT);
+            if (pathCooldown <= 0 || !this.hasMoved())  {
+                pathNumber++;
+                pathCooldown = 100;
+            }
+        } else if (pathNumber == 2) {
+            move(Direction.DOWN);
+            if (pathCooldown <= 0 || !this.hasMoved()) {
+                pathNumber++;
+                pathCooldown = 100;
+            }
+        } else if (pathNumber == 3) {
+            move(Direction.LEFT);
+            if (pathCooldown <= 0 || !this.hasMoved()) {
+                pathNumber++;
+                pathCooldown = 100;
+            }
+        } else if (pathNumber == 4) {
+            move(Direction.UP);
+            if (pathCooldown <= 0 || !this.hasMoved()) {
+                pathNumber = 1;
+                pathCooldown = 100;
+            }
         }
     }
 
 
 
-    public boolean isChasing(Player player) {
-        return parameterDirection().intersects(player.getBounds());
-    }
-
-
-
-    public boolean canAttack(Player player) {
-        return (this.getBounds().intersects(player.getBounds()) && cooldown == 0);
-    }
-
-    public void attack(Player player) {
-        cooldown = 25;
-        player.playerHealth -= 10;
-    }
-
-    public void isTouched(Knife knife) {
-        this.health -= knife.damage;
-    }
-
-//    private void trajectory() {
-//        if (path1) {
-//            move(Direction.RIGHT);
-//            if (y >= 500) {
-//                path1 = false;
-//                path2 = true;
-//            }
-//        } else if (path2) {
-//            move(Direction.DOWN);
-//            if (x <= 100) {
-//                path2 = false;
-//                path3 = true;
-//            }
-//        } else if (path3) {
-//            move(Direction.LEFT);
-//            if (y <= 200) {
-//                path3 = false;
-//                path4 = true;
-//            }
-//        } else if (path4) {
-//            move(Direction.UP);
-//            if (x >= 400) {
-//                path4 = false;
-//                path1 = true;
-//            }
-//        }
-//    }
 
     public void chase(Player player) {
-
         int enemyX = this.x;
         int enemyY = this.y;
-
         int playerX = player.getX();
         int playerY = player.getY();
-
         int dx = playerX - enemyX;
         int dy = playerY - enemyY;
-
         double angle = Math.atan2(dy, dx);
 
         if (angle >= -Math.PI / 4 && angle < Math.PI / 4) {
@@ -158,7 +138,8 @@ public class Npc extends MovableEntity{
         canvas.drawString(" " + x + " " + y ,x ,y ,Color.RED);
         drawHealthEnemy(canvas,x,y);
         drawEnemyImage(canvas, x,y);
-      //  parameterDirection(canvas);
+        canvas.drawString(" " + pathCooldown, x - 10, y - 10,Color.GREEN);
+        canvas.drawString(" " + pathNumber, x - 20, y - 20,Color.GREEN);
     }
 
 
@@ -224,6 +205,25 @@ public class Npc extends MovableEntity{
             canvas.drawImage(frames[currentAnimationFrame], x, y);
         }
     }
+    public boolean isChasing(Player player) {
+        return parameterDirection().intersects(player.getBounds());
+    }
+
+
+
+    public boolean canAttack(Player player) {
+        return (this.getBounds().intersects(player.getBounds()) && cooldown == 0);
+    }
+
+    public void attack(Player player) {
+        cooldown = 25;
+        player.playerHealth -= 10;
+    }
+
+    public void isTouched(Knife knife) {
+        this.health -= knife.damage;
+    }
+
 
     public Rectangle parameterDirection() {
 

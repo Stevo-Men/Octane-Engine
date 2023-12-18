@@ -13,13 +13,16 @@ import java.io.IOException;
 public class Knife extends MovableEntity {
 
     private Direction playerDirection;
-    private static final String SPRITE_PATH = "images/bulletmini.png";
+    private static final String SPRITE_PATH = "images/knife.png";
     private Image image;
     protected int damage = 25;
+    private double currentSpeed;
+    private double acceleration = 0.3;
 
 
     public Knife(Player player) {
-        setSpeed(7);
+        setSpeed(9);
+        currentSpeed = getSpeed();
         playerDirection = player.getDirection();
         load();
         initialize(player);
@@ -30,26 +33,30 @@ public class Knife extends MovableEntity {
 
     @Override
     public void update() {
+        currentSpeed -= acceleration;
+
+        // Move the knife based on the current speed and player's direction
         if (playerDirection == Direction.RIGHT) {
-            x += getSpeed();
+            x += (int) currentSpeed;
         } else if (playerDirection == Direction.LEFT) {
-            x -= getSpeed();
+            x -= (int) currentSpeed;
         } else if (playerDirection == Direction.DOWN) {
-            y += getSpeed();
+            y += (int) currentSpeed;
         } else if (playerDirection == Direction.UP) {
-            y -= getSpeed();
+            y -= (int) currentSpeed;
         }
 
-     /*   if (x >= 820 || x < 0) {
-            x = -20;
+        if (currentSpeed <= 0) {
+            currentSpeed = 0;
         }
-        if (y >= 620 || y < 0) {
-            y = -20;
-        }*/
+
     }
 
     public boolean isOutOfBounds() {
         return x < 16 || x > 1008 || y < 16 || y > 1008;
+    }
+    public boolean isFlying() {
+        return currentSpeed > 0;
     }
 
     @Override

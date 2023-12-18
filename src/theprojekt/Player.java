@@ -23,7 +23,7 @@ public class Player extends ControllableEntity {
     Camera camera;
     private VisualEffect visualEffect;
     private AnimatedEntity animatedEntity;
-
+    private int knifeMunition = 5;
     public int playerHealth = 100;
     private int cooldown = 0;
     protected final int maxHealth = 100;
@@ -32,21 +32,23 @@ public class Player extends ControllableEntity {
         super(controller);
         setDimension(32, 32);
         setSpeed(2);
-
         camera = new Camera();
         visualEffect = new VisualEffect(this);
         animatedEntity = new AnimatedEntity(SPRITE_PATH,this.getWidth(),this.getHeight());
         load();
     }
 
-    public Knife throω() {
+    public Knife throwKnife() {
         cooldown = 50;
+        knifeMunition--;
         return new Knife(this);
     }
 
+
     public boolean canThrow() {
-        return cooldown == 0;
+        return cooldown == 0 && knifeMunition > 0;
     }
+
 
     @Override
     public void update() {
@@ -67,7 +69,7 @@ public class Player extends ControllableEntity {
         visualEffect.drawPlayerLight(canvas);
 
 
-        canvas.drawRectangle(this.getBounds().x,this.getBounds().y,this.getBounds().width,this.getBounds().height,Color.RED);
+        canvas.drawRectangle(this.getBounds().x,this.getBounds().y,this.getBounds().width,this.getBounds().height,new Color(255, 83, 83, 81));
         canvas.drawString(" " + x + " " + y, x, y, Color.RED);
     }
 
