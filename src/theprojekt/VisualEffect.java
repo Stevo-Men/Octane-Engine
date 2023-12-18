@@ -7,6 +7,7 @@ import java.awt.*;
 import java.awt.geom.Area;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,13 +22,14 @@ public class VisualEffect {
     private int lightHeight = 70;
     private final float darkTintOpacity = 0.9f;
     protected Map<Direction, Direction.TriConsumer<Integer, Integer, Integer>> directionCalculations = new HashMap<>();
+    private ArrayList<Knife> knives;
+    private Knife knife;
 
     public VisualEffect(Player player) {
         camera = new Camera();
         this.player = player;
-
-
-
+        knife = new Knife(player);
+        knives = new ArrayList<>();
     }
 
 
@@ -40,24 +42,28 @@ public class VisualEffect {
             lightX = x + player.getWidth() - 12;
             lightY = y + 15 - 2;
             addDarkTint(canvas, darkTintOpacity,false);
+
         });
 
         directionCalculations.put(Direction.LEFT, (x, y, width) -> {
             lightX = x - 56;
             lightY = y + 15 - 2;
             addDarkTint(canvas, darkTintOpacity,false);
+
         });
 
         directionCalculations.put(Direction.DOWN, (x, y, width) -> {
             lightX = x + 6;
             lightY = y + player.getHeight() + 1;
             addDarkTint(canvas, darkTintOpacity,true);
+
         });
 
         directionCalculations.put(Direction.UP, (x, y, width) -> {
             lightX = x + 4;
             lightY = y - 58;
             addDarkTint(canvas, darkTintOpacity,true);
+
         });
 
         directionCalculations.getOrDefault(direction, (x, y, width) -> {}).accept(player.getX(), player.getY(), player.getWidth());
@@ -74,15 +80,20 @@ public class VisualEffect {
         int canvasHeight = 600;
 
 
+
         Rectangle rect = new Rectangle(drawX, drawY, canvasWidth, canvasHeight);
         Ellipse2D ovalVertical = new Ellipse2D.Float(lightX, lightY, lightWidth, lightHeight);
         Ellipse2D ovalHorizontal = new Ellipse2D.Float(lightX, lightY, lightHeight, lightWidth);
         Ellipse2D circle = new Ellipse2D.Float(player.getX() - 32, player.getY() - 32, 100, 100);
+
         Area area = new Area(rect);
+
+
 
         if (vertical) {
             area.subtract(new Area(ovalVertical));
             area.subtract(new Area(circle));
+
         } else {
             area.subtract(new Area(ovalHorizontal));
             area.subtract(new Area(circle));
@@ -93,4 +104,11 @@ public class VisualEffect {
         graphics.fill(area);
     }
 
-}
+    public void knifeLight(Area area) {
+
+        for (Knife knife : knives) {
+            Ellipse2D circleKnife = new Ellipse2D.Float(player.getX(), player.getY() + 10, 10, 10);
+            area.subtract(new Area(circleKnife));
+        }
+
+}}

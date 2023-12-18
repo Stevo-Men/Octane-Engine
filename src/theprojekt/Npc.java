@@ -133,13 +133,14 @@ public class Npc extends MovableEntity{
     public void draw(Canvas canvas, Camera camera) {
         int drawX = x - camera.translateX(this.x); // Adjusted for camera
         int drawY = y - camera.translateX(this.y);  // Adjusted for camera
-        canvas.drawRectangle(x  , y, width, height, new Color(255, 226, 40, 20));
-        canvas.drawRectangle(getBounds().x, getBounds().y, this.getBounds().width, getBounds().height, new Color(40, 255, 86, 20));
-        canvas.drawString(" " + x + " " + y ,x ,y ,Color.RED);
+
         drawHealthEnemy(canvas,x,y);
         drawEnemyImage(canvas, x,y);
-        canvas.drawString(" " + pathCooldown, x - 10, y - 10,Color.GREEN);
-        canvas.drawString(" " + pathNumber, x - 20, y - 20,Color.GREEN);
+//        canvas.drawRectangle(x  , y, width, height, new Color(255, 226, 40, 20));
+//        canvas.drawRectangle(getBounds().x, getBounds().y, this.getBounds().width, getBounds().height, new Color(40, 255, 86, 20));
+//        canvas.drawString(" " + x + " " + y ,x ,y ,Color.RED);
+//        canvas.drawString(" " + pathCooldown, x - 10, y - 10,Color.GREEN);
+//        canvas.drawString(" " + pathNumber, x - 20, y - 20,Color.GREEN);
     }
 
 
@@ -217,7 +218,7 @@ public class Npc extends MovableEntity{
 
     public void attack(Player player) {
         cooldown = 25;
-        player.playerHealth -= 10;
+        player.playerHealth -= 20;
     }
 
     public void isTouched(Knife knife) {

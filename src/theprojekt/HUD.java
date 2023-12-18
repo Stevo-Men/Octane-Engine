@@ -15,9 +15,9 @@ public class HUD extends StaticEntity {
     private int healthBarY;
     private int playerHealth;
     private static final String alertPath = "src/theprojekt/Assets/Alert.png";
-    private static final String techPanelPath = "images/MainPanel01.png";
+    private static final String knifePath = "images/knife.png";
     private static final String hudTexturePath = "images/hudTexture.png";
-    private Image techPanel;
+    private Image knifeImage;
     private Image hudTexturePanel;
     private RessourceLoader ressourceLoader;
     private Font customFont;
@@ -25,10 +25,12 @@ public class HUD extends StaticEntity {
     private Player player;
     private Camera camera;
     private GradientEllipse gradientEllipse;
+    private int knifeMunition;
 
     public HUD() {
         screen = new Screen();
         camera = new Camera();
+        player = new Player(new MovementController());
         ressourceLoader = new RessourceLoader();
         gradientEllipse = new GradientEllipse();
         load();
@@ -45,23 +47,42 @@ public class HUD extends StaticEntity {
         return hudTexturePanel;
     }
 
+    public Image loadImageKnife() {
+        try {
+            knifeImage = ImageIO.read(
+                    this.getClass().getClassLoader().getResourceAsStream(knifePath));
+        } catch (IOException exception) {
+            System.out.println(exception.getMessage());
+        }
+        return knifeImage;
+    }
+
     void update(Player player) {
         playerHealth = player.playerHealth;
-
+        knifeMunition = player.getKnifeMunition();
     }
 
     public void load() {
        //ressourceLoader.loadImage(mainPanel , techPanel);
         loadImage();
-
+        loadImageKnife();
     }
 
 
     public void drawHealthBar(Canvas canvas, Player player) {
         healthBarX = screen.getWidth()+10;
         healthBarY = screen.getHeight()+10;
+        canvas.drawRectangle(healthBarX-2, healthBarY-2, 104, 24, Color.WHITE);
         canvas.drawRectangle(healthBarX, healthBarY, 100, 20, Color.RED);
         canvas.drawRectangle(healthBarX, healthBarY, playerHealth, 20, Color.GREEN);
+    }
+
+    public  void drawKnifeMunition(Canvas canvas, Player player) {
+
+        int knifeMunitionX = screen.getWidth()+10;
+        int knifeMunitionY = screen.getHeight()+50;
+        canvas.drawInfo("Knife : " + knifeMunition , knifeMunitionX, knifeMunitionY, Color.WHITE, customFont, 10);
+        canvas.drawImage(knifeImage , knifeMunitionX, knifeMunitionY + 10);
     }
 
     public void drawAlert(Canvas canvas) {
@@ -71,19 +92,15 @@ public class HUD extends StaticEntity {
 
 
     public void hudTexture(Canvas canvas, MovableEntity player) {
-        // Get the player's position
         int playerX = player.getX();
         int playerY = player.getY();
 
         Graphics2D g2d = canvas.getGraphics();
 
-        // Set the desired opacity
         float opacity = 0.3f;
         AlphaComposite alphaComposite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, opacity);
         g2d.setComposite(alphaComposite);
 
-        // Create a circular shape centered around the player
-        // Create an ellipse centered around the player
         int ellipseRadiusX = 40; // Adjust the X-axis radius as needed
         int ellipseRadiusY = 40; // Adjust the Y-axis radius as needed
         Ellipse2D ellipse = new Ellipse2D.Float(playerX - 22, playerY - 22, 2 * ellipseRadiusX, 2 * ellipseRadiusY);
@@ -93,12 +110,6 @@ public class HUD extends StaticEntity {
 
         // Create an Area representing the difference between the rectangle and the circle
         Area area = new Area(rect);
-
-
-
-
-        // Create a radial gradient paint for the ellipse
-
 
 
         area.subtract(new Area(ellipse));
@@ -130,6 +141,6 @@ public class HUD extends StaticEntity {
     @Override
     public void draw(Canvas canvas) {
         drawHealthBar(canvas,player);
-
+        drawKnifeMunition(canvas,player);
     }
 }

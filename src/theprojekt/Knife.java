@@ -46,6 +46,7 @@ public class Knife extends MovableEntity {
             y -= (int) currentSpeed;
         }
 
+
         if (currentSpeed <= 0) {
             currentSpeed = 0;
         }

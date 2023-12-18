@@ -23,10 +23,11 @@ public class Player extends ControllableEntity {
     Camera camera;
     private VisualEffect visualEffect;
     private AnimatedEntity animatedEntity;
-    private int knifeMunition = 5;
+    int knifeMunition = 5;
     public int playerHealth = 100;
     private int cooldown = 0;
     protected final int maxHealth = 100;
+    private boolean isDead = false;
 
     public Player(MovementController controller) {
         super(controller);
@@ -36,6 +37,10 @@ public class Player extends ControllableEntity {
         visualEffect = new VisualEffect(this);
         animatedEntity = new AnimatedEntity(SPRITE_PATH,this.getWidth(),this.getHeight());
         load();
+    }
+
+    public int getKnifeMunition() {
+        return knifeMunition;
     }
 
     public Knife throwKnife() {
@@ -61,6 +66,11 @@ public class Player extends ControllableEntity {
         if (cooldown < 0) {
             cooldown = 0;
         }
+
+        if (playerHealth <= 0) {
+           isDead = true;
+
+        }
     }
 
     @Override
@@ -68,9 +78,12 @@ public class Player extends ControllableEntity {
         animatedEntity.drawCharacterImage(canvas, 0, 0, this);;
         visualEffect.drawPlayerLight(canvas);
 
+        if (isDead) {
+            canvas.drawInfo("You died", 160, 300, Color.RED, new Font("Arial", Font.BOLD, 50), 50);
+        }
 
-        canvas.drawRectangle(this.getBounds().x,this.getBounds().y,this.getBounds().width,this.getBounds().height,new Color(255, 83, 83, 81));
-        canvas.drawString(" " + x + " " + y, x, y, Color.RED);
+//        canvas.drawRectangle(this.getBounds().x,this.getBounds().y,this.getBounds().width,this.getBounds().height,new Color(255, 83, 83, 81));
+//        canvas.drawString(" " + x + " " + y, x, y, Color.RED);
     }
 
     private void load() {
@@ -79,10 +92,7 @@ public class Player extends ControllableEntity {
     }
 
 
-
-
-
-
-
-
+    public boolean isDead() {
+        return isDead;
+    }
 }
