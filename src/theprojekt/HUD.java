@@ -101,6 +101,8 @@ public class HUD extends StaticEntity {
         AlphaComposite alphaComposite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, opacity);
         g2d.setComposite(alphaComposite);
 
+        // Create a circular shape centered around the player
+        // Create an ellipse centered around the player
         int ellipseRadiusX = 40; // Adjust the X-axis radius as needed
         int ellipseRadiusY = 40; // Adjust the Y-axis radius as needed
         Ellipse2D ellipse = new Ellipse2D.Float(playerX - 22, playerY - 22, 2 * ellipseRadiusX, 2 * ellipseRadiusY);

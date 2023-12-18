@@ -2,7 +2,6 @@ package theprojekt;
 
 import doctrina.Canvas;
 import doctrina.Screen;
-import doctrina.StaticEntity;
 
 import java.awt.*;
 
@@ -12,7 +11,7 @@ public class Camera {
     private GamePad gamePad;
     private Rectangle rectangle;
     private Screen screen;
-    private Player player;
+
     private Map map;
 
     public Camera() {

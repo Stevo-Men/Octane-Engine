@@ -31,7 +31,6 @@ public class theprojektGame extends Game {
         camera = new Camera();
         npcs = new ArrayList<>();
         npcs.add(new Npc(200, 200));
-        npcs.add(new Npc(400, 200));
         npcs.add(new Npc(800, 400));
         npcs.add(new Npc(100, 100));
         hud = new HUD();
@@ -56,16 +55,18 @@ public class theprojektGame extends Game {
             knives.add(player.throwKnife());
         }
 
-
         player.update();
-
         camera.update();
         hud.update(player);
 
         ArrayList<StaticEntity> killedElements = new ArrayList<>();
 
-
-
+        for (Npc npc : npcs) {
+            if (npc.canAttack(player)) {
+                npc.attack(player);
+            }
+            npc.update(player);
+        }
 
         for (Knife knife : knives) {
             if (knife.isOutOfBounds() || !knife.isFlying()) {
@@ -97,17 +98,17 @@ public class theprojektGame extends Game {
 
 
 
-//        if (gamePad.isPausePressed() ) {
-//            isPaused();
-//            try {
-//
-//                Thread.sleep(1000);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//            paused = false;
-//
-//        }
+        if (gamePad.isPausePressed() ) {
+            isPaused();
+            try {
+
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            paused = false;
+
+        }
 
     }
 
@@ -120,6 +121,12 @@ public class theprojektGame extends Game {
 
 
 
+
+
+
+
+
+
     @Override
     protected void draw(Canvas canvas) {
 
@@ -127,7 +134,7 @@ public class theprojektGame extends Game {
         int translatedY = camera.translateY(map.getY());
 
 
-        map.draw(canvas,0,0);
+        map.draw(canvas, translatedX, translatedY);
 
         for (StaticEntity blockade : blockadeMaps) {
             blockade.draw(canvas);

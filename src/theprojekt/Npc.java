@@ -218,7 +218,7 @@ public class Npc extends MovableEntity{
 
     public void attack(Player player) {
         cooldown = 25;
-        player.playerHealth -= 20;
+        player.playerHealth -= 10;
     }
 
     public void isTouched(Knife knife) {
