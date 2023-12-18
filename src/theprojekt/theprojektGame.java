@@ -56,9 +56,9 @@ public class theprojektGame extends Game {
             knives.add(player.throwKnife());
         }
 
-        if (!player.isDead()) {
-            player.update();
-        }
+
+        player.update();
+
         camera.update();
         hud.update(player);
 
@@ -97,17 +97,17 @@ public class theprojektGame extends Game {
 
 
 
-        if (gamePad.isPausePressed() ) {
-            isPaused();
-            try {
-
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            paused = false;
-
-        }
+//        if (gamePad.isPausePressed() ) {
+//            isPaused();
+//            try {
+//
+//                Thread.sleep(1000);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//            paused = false;
+//
+//        }
 
     }
 
@@ -127,7 +127,7 @@ public class theprojektGame extends Game {
         int translatedY = camera.translateY(map.getY());
 
 
-        map.draw(canvas, translatedX, translatedY);
+        map.draw(canvas,0,0);
 
         for (StaticEntity blockade : blockadeMaps) {
             blockade.draw(canvas);

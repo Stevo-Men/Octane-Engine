@@ -2,6 +2,7 @@ package theprojekt;
 
 import doctrina.Canvas;
 import doctrina.Screen;
+import doctrina.StaticEntity;
 
 import java.awt.*;
 
