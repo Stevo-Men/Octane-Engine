@@ -3,6 +3,7 @@ package doctrina;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,15 +29,8 @@ public class RessourceLoader {
         return null;
     }
 
-    public Image loadImage(String path, Image imageName) {
-        try {
-            imageName = ImageIO.read(
-                    this.getClass().getClassLoader().getResourceAsStream(path));
-        } catch (IOException exception) {
-            System.out.println(exception.getMessage());
-        }
-        return imageName;
-    }
+
+
 
 
 }

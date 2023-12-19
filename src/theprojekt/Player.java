@@ -25,7 +25,7 @@ public class Player extends ControllableEntity {
     private VisualEffect visualEffect;
     private AnimatedEntity animatedEntity;
     int knifeMunition = 10;
-    public int playerHealth = 1000000;
+    public int playerHealth = 1000;
     private int cooldown = 0;
     private boolean isAlive = true;
     public boolean detectedState = false;

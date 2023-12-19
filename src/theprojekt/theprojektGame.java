@@ -13,19 +13,16 @@ import java.util.List;
 public class theprojektGame extends Game {
     private Player player;
     private GamePad gamePad;
-
     private Map map;
     private Camera camera;
-    private Npc npc;
     private ArrayList<Npc> npcs;
+    private ArrayList<Chest> chests;
     private List<StaticEntity> blockadeMaps;
     private HUD hud;
     private ArrayList<Knife> knives;
     private BlockadeMap blockadeMap;
-    private boolean paused = false;
     private final SoundEffect gameOverFx = SoundEffect.GAMEOVER_FX;
     private final SoundEffect dashFx = SoundEffect.DASH_FX;
-
 
     @Override
     protected void initialize() {
@@ -46,10 +43,16 @@ public class theprojektGame extends Game {
         npcs.add(new Npc(540, 440,0));
         npcs.add(new Npc(750, 170,2));
         npcs.add(new Npc(460, 160,0));
+        chests = new ArrayList<>();
+        chests.add(new Chest(100, 400, 10, 100));
+        chests.add(new Chest(150, 160, 10, 100));
+        chests.add(new Chest(450, 360, 10, 100));
+        chests.add(new Chest(460, 60, 10, 100));
         hud = new HUD();
         knives = new ArrayList<>();
         blockadeMap = new BlockadeMap(0, 0);
         blockadeMaps = new ArrayList<>();
+
 
 
 
@@ -101,8 +104,17 @@ public class theprojektGame extends Game {
             } else {
                 npc.isAttacking = false;
             }
-
+            if (npc.isChasing(player)) {
+                player.detectedState = npc.isChasing(player);
+            }
             npc.update(player);
+        }
+
+        for (Chest chest : chests) {
+            if (player.getBounds().intersects(chest.getBounds()) && chest.isAlive) {
+                chest.open(player);
+            }
+
         }
 
         for (Knife knife : knives) {
@@ -127,6 +139,7 @@ public class theprojektGame extends Game {
         for (StaticEntity killedElement : killedElements) {
             if (killedElement instanceof Npc) {
                 npcs.remove(killedElement);
+                player.detectedState = false;
             }
             if (killedElement instanceof Knife) {
                 knives.remove(killedElement);
@@ -136,20 +149,6 @@ public class theprojektGame extends Game {
 
 
     }
-
-
-
-
-    public void isPaused() {
-         paused = true;
-    }
-
-
-
-
-
-
-
 
 
     @Override
@@ -162,6 +161,13 @@ public class theprojektGame extends Game {
         }
         blockadeMap.draw(canvas);
 
+        for (Chest chest : chests) {
+            chest.draw(canvas);
+            if (!chest.isAlive) {
+                chest.draw(canvas);
+            }
+        }
+
         for (Npc npc : npcs) {
             npc.draw(canvas, camera, npc.getBounds().intersects(player.playerVision.getBounds2D()));
 
@@ -173,16 +179,13 @@ public class theprojektGame extends Game {
         for (Knife knife : knives) {
             knife.draw(canvas);
         }
-        if (player.stillAlive()) {
 
+        if (player.stillAlive()) {
             player.draw(canvas);
             hud.draw(canvas);
             player.drawDebuginfo(canvas);
             hud.hudTexture(canvas, player);
-
-
         } else {
-
            hud.drawGameOver(canvas);
         }
 

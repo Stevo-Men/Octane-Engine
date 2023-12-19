@@ -28,8 +28,7 @@ public class Npc extends MovableEntity{
     private int health = 50;
     private int cooldown = 0;
     private int pathCooldown = 0;
-    private int parameterX;
-    private int parameterY;
+    private int parameterX,parameterY;
     private int parameterWidth = 130;
     private int parameterHeight = 200;
     private boolean isDamaged = false;
@@ -54,54 +53,41 @@ public class Npc extends MovableEntity{
         camera = new Camera();
         load();
 
-
     }
 
     public void update(Player player) {
         super.update();
+        handleAnimationEnemy();
 
-           x = camera.translateX(this.x);
-           y = camera.translateY(this.y);
+        coolDown();
+        takeAction(player);
 
 
+    }
 
+    private void coolDown() {
         cooldown--;
         pathCooldown--;
         if (cooldown < 0) {
             cooldown = 0;
         }
+    }
 
-
-        handleAnimationEnemy();
-
-
-        if (this.isChasing(player)) {
+    private void takeAction(Player player) {
+        if (isChasing(player)) {
             setSpeed(2);
-            player.detectedState = true;
             chase(player);
             npcScreaming.play();
-
         } else if (path == 1) {
             setSpeed(1);
-            player.detectedState = false;
             trajectory();
         } else if (path == 2) {
             setSpeed(1);
-            player.detectedState = false;
             trajectoryLinear();
         } else {
             setSpeed(1);
-            player.detectedState = false;
-
         }
-
     }
-
-
-
-
-
-
 
 
     private void trajectory() {
@@ -154,7 +140,7 @@ public class Npc extends MovableEntity{
         int enemyX = this.x;
         int enemyY = this.y;
         int playerX = player.getX();
-        int playerY = player.getY();
+        int playerY = player.getY()-16;
         int dx = playerX - enemyX;
         int dy = playerY - enemyY;
         double angle = Math.atan2(dy, dx);
@@ -349,10 +335,8 @@ public class Npc extends MovableEntity{
     public void detectionParameter(int x, int y, boolean horizontal) {
         if (horizontal) {
            Rectangle horizontalParameter = new Rectangle(x, y, parameterWidth, parameterHeight);
-           // canvas.drawDetectionRect(horizontalParameter, new Color(99, 144, 255, 137));
         } else {
            Rectangle verticalParameter =  new Rectangle(x, y, parameterHeight, parameterWidth);
-          //  canvas.drawDetectionRect(verticalParameter , new Color(99, 144, 255, 137));
         }
     }
 
