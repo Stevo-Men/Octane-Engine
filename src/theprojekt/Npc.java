@@ -9,13 +9,22 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.HashMap;
 
+import static theprojekt.SoundEffect.NPC_SCREAMING;
+
 public class Npc extends MovableEntity{
 
     private static final String SPRITE_PATH = "images/enemy1.png";
+    private static final String ATTACK_PATH = "images/enemyAttacking.png";
+    private static final String ATTACK_PATH = "images/enemyAttacking.png";
     private static final int ANIMATION_SPEED = 8;
     protected java.util.Map<Direction, Image[]> directionFramesMap = new HashMap<>();
+    private static final String IMPACT_PATH = "images/impact_enemy.png";
+    private List impactFrames;
+    private int impactAnimationFrame = 0;
+    private boolean isImpacting = false;
 
     private BufferedImage spriteSheet;
+    private BufferedImage attackSheet;
     private int currentAnimationFrame = 1;
     private int nextFrame = ANIMATION_SPEED;
     private int pathNumber = 1;
@@ -26,8 +35,12 @@ public class Npc extends MovableEntity{
     private int parameterY;
     private int parameterWidth = 130;
     private int parameterHeight = 200;
+    private boolean isDead = false;
+    private boolean detectedFx = false;
+    private boolean isAttacking = false;
     protected java.util.Map<Direction, Direction.TriConsumer<Integer, Integer, Integer>> directionCalculations = new HashMap<>();
     private Camera camera;
+    private SoundEffect soundEffect = NPC_SCREAMING;
 
 
 
@@ -40,6 +53,7 @@ public class Npc extends MovableEntity{
         setDimension(32, 32);
         camera = new Camera();
         load();
+       // loadImpactFrames();
 
     }
 
@@ -53,6 +67,7 @@ public class Npc extends MovableEntity{
 
         cooldown--;
         pathCooldown--;
+        isAttacking = false;
         if (cooldown < 0) {
             cooldown = 0;
         }
@@ -61,13 +76,22 @@ public class Npc extends MovableEntity{
 
         handleAnimationEnemy();
 
-            if (isChasing(player)) {
-                chase(player);
-            } else {
-                trajectory();
-            }
 
+        if (this.isChasing(player)) {
+            setSpeed(2);
+            player.detectedState = true;
+            chase(player);
+            soundEffect.play();
+
+        } else {
+            setSpeed(1);
+            player.detectedState = false;
+            trajectory();
+        }
     }
+
+
+
 
 
 
@@ -131,11 +155,12 @@ public class Npc extends MovableEntity{
 
 
     public void draw(Canvas canvas, Camera camera) {
-        int drawX = x - camera.translateX(this.x); // Adjusted for camera
-        int drawY = y - camera.translateX(this.y);  // Adjusted for camera
+        int drawX = camera.translateX(x);
+       int drawY = camera.translateY(y);
 
         drawHealthEnemy(canvas,x,y);
-        drawEnemyImage(canvas, x,y);
+        drawEnemyImage(canvas, drawX,drawY);
+        canvas.drawString(" " + cooldown, x - 10, y - 10,Color.GREEN);
 //        canvas.drawRectangle(x  , y, width, height, new Color(255, 226, 40, 20));
 //        canvas.drawRectangle(getBounds().x, getBounds().y, this.getBounds().width, getBounds().height, new Color(40, 255, 86, 20));
 //        canvas.drawString(" " + x + " " + y ,x ,y ,Color.RED);
@@ -157,6 +182,7 @@ public class Npc extends MovableEntity{
     private void load() {
         loadSpriteSheet();
         loadAnimationFrames();
+        loadSpriteDeath();
     }
 
     private void loadSpriteSheet() {
@@ -167,11 +193,20 @@ public class Npc extends MovableEntity{
         }
     }
 
+    private void loadSpriteDeath() {
+        try {
+            spriteDeath = ImageIO.read(this.getClass().getClassLoader().getResourceAsStream(SPRITE_DEATH_PATH));
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
     protected void loadAnimationFrames() {
         directionFramesMap.put(Direction.DOWN, loadFrames(0));
         directionFramesMap.put(Direction.LEFT, loadFrames(32));
         directionFramesMap.put(Direction.RIGHT, loadFrames(64));
         directionFramesMap.put(Direction.UP, loadFrames(96));
+
     }
 
     protected Image[] loadFrames(int startY) {
@@ -181,6 +216,8 @@ public class Npc extends MovableEntity{
         frames[2] = spriteSheet.getSubimage(64, startY, width, height);
         return frames;
     }
+
+
 
     protected void handleAnimationEnemy() {
         if (!hasMoved()) {
@@ -217,6 +254,7 @@ public class Npc extends MovableEntity{
     }
 
     public void attack(Player player) {
+        isAttacking = true;
         cooldown = 25;
         player.playerHealth -= 10;
     }
@@ -270,6 +308,5 @@ public class Npc extends MovableEntity{
           //  canvas.drawDetectionRect(verticalParameter , new Color(99, 144, 255, 137));
         }
     }
-
 
 }

@@ -26,7 +26,15 @@ public class Player extends ControllableEntity {
     int knifeMunition = 5;
     public int playerHealth = 100;
     private int cooldown = 0;
+    private boolean isAlive = true;
+    public boolean detectedState = false;
     protected final int maxHealth = 100;
+    private SoundEffect soundEffect;
+    private boolean isDashing = false;
+    private int dashDuration = 50;
+    private int dashCooldown = 50;
+       private int dashTimer = 0;
+    private int currentSpeed = 5;
 
     public Player(MovementController controller) {
         super(controller);
@@ -45,6 +53,7 @@ public class Player extends ControllableEntity {
     public Knife throwKnife() {
         cooldown = 50;
         knifeMunition--;
+        soundEffect.KNIFE_THROW.play();
         return new Knife(this);
     }
 
@@ -52,7 +61,41 @@ public class Player extends ControllableEntity {
     public boolean canThrow() {
         return cooldown == 0 && knifeMunition > 0;
     }
+    public boolean canDash() {
+        if (!isDashing && dashCooldown <= 0) {
+            isDashing = true;
+            dashTimer = 0;
+        }
+        return dashCooldown == 0;
+    }
 
+    public void dash() {
+
+
+
+       if (isDashing) {
+        float dashProgress = (float) 100 / dashDuration;
+
+        // Move the player based on the current speed and player's direction
+        if (getDirection() == Direction.RIGHT) {
+            x += (int) (currentSpeed * dashProgress);
+        } else if (getDirection() == Direction.LEFT) {
+            x -= (int) (currentSpeed * dashProgress);
+        } else if (getDirection() == Direction.DOWN) {
+            y += (int) (currentSpeed * dashProgress);
+        } else if (getDirection() == Direction.UP) {
+            y -= (int) (currentSpeed * dashProgress);
+        }
+
+        dashTimer++;
+
+            if (dashTimer >= 10) {
+                isDashing = false;
+                dashCooldown = 50;
+            }
+        }
+
+    }
 
     @Override
     public void update() {
@@ -61,9 +104,18 @@ public class Player extends ControllableEntity {
         moveWithController();
         animatedEntity.update(this);
 
+        dashCooldown--;
+        if (dashCooldown < 0) {
+            dashCooldown = 0;
+        }
+
         cooldown--;
         if (cooldown < 0) {
             cooldown = 0;
+        }
+
+        if (playerHealth <= 0) {
+            isAlive = false;
         }
     }
 
@@ -71,10 +123,7 @@ public class Player extends ControllableEntity {
     public void draw(Canvas canvas) {
         animatedEntity.drawCharacterImage(canvas, 0, 0, this);;
         visualEffect.drawPlayerLight(canvas);
-
-
-//        canvas.drawRectangle(this.getBounds().x,this.getBounds().y,this.getBounds().width,this.getBounds().height,new Color(255, 83, 83, 81));
-//        canvas.drawString(" " + x + " " + y, x, y, Color.RED);
+        canvas.drawString(" " + isDetected(), x, y, Color.WHITE);
     }
 
     private void load() {
@@ -82,9 +131,14 @@ public class Player extends ControllableEntity {
 
     }
 
+    public boolean isDetected() {
+        return detectedState;
+    }
 
 
-
+    public boolean stillAlive() {
+            return isAlive;
+        }
 
 
 

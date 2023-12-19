@@ -10,6 +10,7 @@ public class GamePad extends MovementController {
     private final int attackKey = KeyEvent.VK_SPACE;
     private final int pauseKey = KeyEvent.VK_P;
     private final int resumeKey = KeyEvent.VK_O;
+    private final int shiftKey = KeyEvent.VK_SHIFT;
 
 
 
@@ -18,6 +19,7 @@ public class GamePad extends MovementController {
         bindKey(attackKey);
         bindKey(pauseKey);
         bindKey(resumeKey);
+        bindKey(shiftKey);
     }
 
     public boolean isAttackPressed() {
@@ -37,7 +39,9 @@ public class GamePad extends MovementController {
         return isKeyPressed(resumeKey);
     }
 
-
+    public boolean isShiftPressed() {
+        return isKeyPressed(shiftKey);
+    }
 
 
 }

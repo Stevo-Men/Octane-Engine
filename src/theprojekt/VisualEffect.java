@@ -22,14 +22,11 @@ public class VisualEffect {
     private int lightHeight = 70;
     private final float darkTintOpacity = 0.9f;
     protected Map<Direction, Direction.TriConsumer<Integer, Integer, Integer>> directionCalculations = new HashMap<>();
-    private ArrayList<Knife> knives;
-    private Knife knife;
+
 
     public VisualEffect(Player player) {
         camera = new Camera();
         this.player = player;
-        knife = new Knife(player);
-        knives = new ArrayList<>();
     }
 
 
@@ -104,11 +101,6 @@ public class VisualEffect {
         graphics.fill(area);
     }
 
-    public void knifeLight(Area area) {
 
-        for (Knife knife : knives) {
-            Ellipse2D circleKnife = new Ellipse2D.Float(player.getX(), player.getY() + 10, 10, 10);
-            area.subtract(new Area(circleKnife));
-        }
 
-}}
+}

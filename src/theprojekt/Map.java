@@ -10,10 +10,21 @@ public class Map {
 
     private static final String MAP_PATH = "images/sewer_map.png";
     private Image background;
-    public int x; // X-coordinate of the map
-    public int y; // Y-coordinate of the map
+    public int mapX;
+    public int mapY;
+    public int mapWidth;
+    public int mapHeight;
     private int drawX,drawY;
+    private Camera camera;
 
+
+//    public Map() {
+//        mapX = 0;
+//        mapY = 0;
+//        mapWidth =  1024;
+//        mapHeight = 1024;
+//        camera = new Camera();
+//    }
     public void load() {
         try {
             background = ImageIO.read(
@@ -23,30 +34,22 @@ public class Map {
         }
     }
 
-    public void setPosition(int x, int y) {
-        this.x = x;
-        this.y = y;
-    }
+
 
     public int getX() {
-        return x;
+        return mapX;
     }
 
     public int getY() {
-        return y;
-    }
-
-    public void move(int dx, int dy) {
-        this.x += dx;
-        this.y += dy;
+        return mapY;
     }
 
 
 
-    public void draw(Canvas canvas, int cameraX, int cameraY) {
+    public void draw(Canvas canvas, Camera camera) {
         // Adjust the drawing position based on the camera's position
-        int drawX = x - cameraX;
-        int drawY = y - cameraY;
+        int drawX = camera.translateX(mapX);
+        int drawY = camera.translateY(mapY);
 
         // Draw the background at the adjusted position
         canvas.drawImage(background, drawX, drawY);

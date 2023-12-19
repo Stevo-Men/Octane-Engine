@@ -17,14 +17,17 @@ public class HUD extends StaticEntity {
     private static final String alertPath = "src/theprojekt/Assets/Alert.png";
     private static final String knifePath = "images/knife.png";
     private static final String hudTexturePath = "images/hudTexture.png";
+    private static final String hudDetectedPath = "images/hudDetected2.png";
     private Image knifeImage;
     private Image hudTexturePanel;
+    private Image hudDetectedTexture;
     private RessourceLoader ressourceLoader;
     private Font customFont;
     private Graphics graphics;
     private Player player;
     private Camera camera;
-    private GradientEllipse gradientEllipse;
+    private boolean detected = false;
+
     private int knifeMunition;
 
     public HUD() {
@@ -32,41 +35,34 @@ public class HUD extends StaticEntity {
         camera = new Camera();
         player = new Player(new MovementController());
         ressourceLoader = new RessourceLoader();
-        gradientEllipse = new GradientEllipse();
         load();
 
     }
 
-    public Image loadImage() {
+    private Image loadImage(String imagePath) {
         try {
-            hudTexturePanel = ImageIO.read(
-                    this.getClass().getClassLoader().getResourceAsStream(hudTexturePath));
+            return ImageIO.read(
+                    this.getClass().getClassLoader().getResourceAsStream(imagePath));
         } catch (IOException exception) {
             System.out.println(exception.getMessage());
+            return null; // Handle the exception accordingly in your application
         }
-        return hudTexturePanel;
     }
 
-    public Image loadImageKnife() {
-        try {
-            knifeImage = ImageIO.read(
-                    this.getClass().getClassLoader().getResourceAsStream(knifePath));
-        } catch (IOException exception) {
-            System.out.println(exception.getMessage());
-        }
-        return knifeImage;
+    public void load() {
+        hudTexturePanel = loadImage(hudTexturePath);
+        knifeImage = loadImage(knifePath);
+       hudDetectedTexture = loadImage(hudDetectedPath);
+
     }
 
     void update(Player player) {
         playerHealth = player.playerHealth;
         knifeMunition = player.getKnifeMunition();
+        detected = player.isDetected();
     }
 
-    public void load() {
-       //ressourceLoader.loadImage(mainPanel , techPanel);
-        loadImage();
-        loadImageKnife();
-    }
+
 
 
     public void drawHealthBar(Canvas canvas, Player player) {
@@ -92,6 +88,7 @@ public class HUD extends StaticEntity {
 
 
     public void hudTexture(Canvas canvas, MovableEntity player) {
+        update((Player) player);
         int playerX = player.getX();
         int playerY = player.getY();
 
@@ -120,7 +117,12 @@ public class HUD extends StaticEntity {
         g2d.setClip(area);
 
         // Fill the area with the desired HUD texture (background)
-        g2d.drawImage(hudTexturePanel, -30, -15, 972, 610, null);
+
+        if (detected) {
+            g2d.drawImage(hudDetectedTexture, -30, -15, 972, 610, null);
+        } else {
+            g2d.drawImage(hudTexturePanel, -30, -15, 972, 610, null);
+        }
 
 
         g2d.setClip(ellipse);
@@ -137,12 +139,17 @@ public class HUD extends StaticEntity {
     public void drawPauseMenu(Canvas canvas, boolean paused) {
         if (paused) {
         canvas.drawInfo(" P A U S E ", 160, 300, Color.WHITE, customFont, 60);
+        }
     }
+
+    public void drawGameOver(Canvas canvas) {
+        canvas.drawInfo("G A M E  O V E R", 160, 300, Color.RED, customFont, 60);
     }
 
     @Override
     public void draw(Canvas canvas) {
         drawHealthBar(canvas,player);
         drawKnifeMunition(canvas,player);
+
     }
 }

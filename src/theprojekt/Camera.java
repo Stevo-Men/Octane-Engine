@@ -8,40 +8,30 @@ import java.awt.*;
 public class Camera {
     private int x;
     private int y;
-    private GamePad gamePad;
-    private Rectangle rectangle;
-    private Screen screen;
 
-    private Map map;
+
 
     public Camera() {
         this.x = 0;
         this.y = 0;
-        gamePad = new GamePad();
-        map = new Map();
-        screen = new Screen();
-    }
 
-//    public void update() {
-//        if (gamePad.isDownPressed()) {
-//            move(0, -1);
-//        }
-//        if (gamePad.isUpPressed()) {
-//            move(0, 1);
-//        }
-//        if (gamePad.isRightPressed()) {
-//            move(-1, 0);
-//        }
-//        if (gamePad.isLeftPressed()) {
-//            move(1, 0);
-//        }
-//    }
-
-    public void update() {
 
     }
 
 
+
+    public void update(Player player) {
+        if (player.getX() > 400) {
+            x = player.getX() - 400;
+        }
+        if (player.getY() > 300) {
+            y = player.getY() - 300;
+        }
+    }
+
+    public void draw(Canvas canvas) {
+
+    }
 
     public int getX() {
         return x;
@@ -58,10 +48,7 @@ public class Camera {
     }
 
     // Set the camera to a specific position
-    public void setPosition(int x, int y) {
-        this.x = x;
-        this.y = y;
-    }
+
 
     // Apply the camera translation to the given coordinates
     public int translateX(int worldX) {

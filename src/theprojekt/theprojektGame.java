@@ -3,6 +3,9 @@ package theprojekt;
 import doctrina.Canvas;
 import doctrina.*;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,13 +22,15 @@ public class theprojektGame extends Game {
     private ArrayList<Knife> knives;
     private BlockadeMap blockadeMap;
     private boolean paused = false;
+    private final SoundEffect gameOverFx = SoundEffect.GAMEOVER_FX;
+    private final SoundEffect dashFx = SoundEffect.DASH_FX;
 
 
     @Override
     protected void initialize() {
         gamePad = new GamePad();
         player = new Player(gamePad);
-        player.teleport(400, 400);
+        player.teleport(390, 400);
         map = new Map();
         map.load();
         camera = new Camera();
@@ -39,6 +44,19 @@ public class theprojektGame extends Game {
         blockadeMaps = new ArrayList<>();
 
 
+
+        try {
+            Clip clip = AudioSystem.getClip();
+            AudioInputStream stream = AudioSystem.getAudioInputStream(
+                    this.getClass().getClassLoader().getResourceAsStream("audios/droneAmbient.wav"));
+            clip.open(stream);
+            clip.loop(Clip.LOOP_CONTINUOUSLY);
+            clip.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
         RenderingEngine.getInstance().getScreen().toggleFullscreen();
         RenderingEngine.getInstance().getScreen().hideCursor();
     }
@@ -50,13 +68,20 @@ public class theprojektGame extends Game {
         if (gamePad.isQuitPressed()) {
             stop();
         }
+        if (!player.stillAlive()) {
+           gameOverFx.play();
+        }
 
         if (gamePad.isAttackPressed() && player.canThrow()) {
             knives.add(player.throwKnife());
         }
+        if (gamePad.isShiftPressed() && player.canDash()) {
+           player.dash();
+           dashFx.play();
+        }
 
         player.update();
-        camera.update();
+        //camera.update(player);
         hud.update(player);
 
         ArrayList<StaticEntity> killedElements = new ArrayList<>();
@@ -64,6 +89,7 @@ public class theprojektGame extends Game {
         for (Npc npc : npcs) {
             if (npc.canAttack(player)) {
                 npc.attack(player);
+
             }
             npc.update(player);
         }
@@ -96,20 +122,6 @@ public class theprojektGame extends Game {
         CollidableRepository.getInstance().unregisterEntities(killedElements);
 
 
-
-
-        if (gamePad.isPausePressed() ) {
-            isPaused();
-            try {
-
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            paused = false;
-
-        }
-
     }
 
 
@@ -129,12 +141,11 @@ public class theprojektGame extends Game {
 
     @Override
     protected void draw(Canvas canvas) {
+        if (player.stillAlive()) {
+            hud.drawGameOver(canvas);
+        }
 
-        int translatedX = camera.translateX(map.getX());
-        int translatedY = camera.translateY(map.getY());
-
-
-        map.draw(canvas, translatedX, translatedY);
+        map.draw(canvas,camera);
 
         for (StaticEntity blockade : blockadeMaps) {
             blockade.draw(canvas);
@@ -151,7 +162,8 @@ public class theprojektGame extends Game {
 
         player.draw(canvas);
         hud.draw(canvas);
-        hud.hudTexture(canvas,player);
+        hud.hudTexture(canvas, player);
+
 
 
     }
