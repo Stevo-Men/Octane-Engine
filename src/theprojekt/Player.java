@@ -25,7 +25,7 @@ public class Player extends ControllableEntity {
     private VisualEffect visualEffect;
     private AnimatedEntity animatedEntity;
     int knifeMunition = 10;
-    public int playerHealth = 100;
+    public int playerHealth = 1000000;
     private int cooldown = 0;
     private boolean isAlive = true;
     public boolean detectedState = false;
@@ -122,7 +122,11 @@ public class Player extends ControllableEntity {
     public void draw(Canvas canvas) {
         animatedEntity.drawCharacterImage(canvas, 0, 0, this);;
         visualEffect.drawPlayerLight(canvas);
-        canvas.drawString(" " + isDetected(), x, y, Color.WHITE);
+    }
+
+    public void drawDebuginfo(Canvas canvas) {
+        canvas.drawString(" " + isDetected(), x-60, y-60, Color.WHITE);
+        canvas.drawString("x: " + x + " y: " + y, x - 50, y - 50, Color.WHITE);
     }
 
     private void load() {

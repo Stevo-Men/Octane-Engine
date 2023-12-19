@@ -39,12 +39,13 @@ public class Npc extends MovableEntity{
     private Camera camera;
     private SoundEffect npcScreaming = NPC_SCREAMING;
     private SoundEffect npcAttack = NPC_ATTACK;
-    private boolean path;
+    private int path;
 
 
 
 
-    public Npc(int x, int y, boolean path) {
+
+    public Npc(int x, int y, int path) {
         this.x = x;
         this.y = y;
         this.path = path;
@@ -80,10 +81,14 @@ public class Npc extends MovableEntity{
             chase(player);
             npcScreaming.play();
 
-        } else if (path) {
+        } else if (path == 1) {
             setSpeed(1);
             player.detectedState = false;
             trajectory();
+        } else if (path == 2) {
+            setSpeed(1);
+            player.detectedState = false;
+            trajectoryLinear();
         } else {
             setSpeed(1);
             player.detectedState = false;
@@ -120,6 +125,22 @@ public class Npc extends MovableEntity{
             }
         } else if (pathNumber == 4) {
             move(Direction.UP);
+            if (pathCooldown <= 0 || !this.hasMoved()) {
+                pathNumber = 1;
+                pathCooldown = 100;
+            }
+        }
+    }
+
+    private void trajectoryLinear() {
+        if (pathNumber == 1) {
+            move(Direction.RIGHT);
+            if (pathCooldown <= 0 || !this.hasMoved())  {
+                pathNumber++;
+                pathCooldown = 100;
+            }
+        } else if (pathNumber == 2) {
+            move(Direction.LEFT);
             if (pathCooldown <= 0 || !this.hasMoved()) {
                 pathNumber = 1;
                 pathCooldown = 100;

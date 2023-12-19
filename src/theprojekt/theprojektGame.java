@@ -36,9 +36,16 @@ public class theprojektGame extends Game {
         map.load();
         camera = new Camera();
         npcs = new ArrayList<>();
-        npcs.add(new Npc(100, 300,false));
-        npcs.add(new Npc(800, 400,true));
-        npcs.add(new Npc(100, 100,true));
+        npcs.add(new Npc(100, 300,0));
+        npcs.add(new Npc(800, 400,1));
+        npcs.add(new Npc(100, 100,1));
+        npcs.add(new Npc(275, 75,2));
+        npcs.add(new Npc(600, 75,2));
+        npcs.add(new Npc(830, 70,2));
+        npcs.add(new Npc(380, 450,0));
+        npcs.add(new Npc(540, 440,0));
+        npcs.add(new Npc(750, 170,2));
+        npcs.add(new Npc(460, 160,0));
         hud = new HUD();
         knives = new ArrayList<>();
         blockadeMap = new BlockadeMap(0, 0);
@@ -170,7 +177,10 @@ public class theprojektGame extends Game {
 
             player.draw(canvas);
             hud.draw(canvas);
+            player.drawDebuginfo(canvas);
             hud.hudTexture(canvas, player);
+
+
         } else {
 
            hud.drawGameOver(canvas);
