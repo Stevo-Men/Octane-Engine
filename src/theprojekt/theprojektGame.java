@@ -169,7 +169,7 @@ public class theprojektGame extends Game {
         }
 
         for (Npc npc : npcs) {
-            npc.draw(canvas, camera, npc.getBounds().intersects(player.playerVision.getBounds2D()));
+            npc.draw(canvas, npc.getBounds().intersects(player.playerVision.getBounds2D()));
 
             if (npc.isAttacking) {
                 npc.drawAttackEffect(canvas,player);

@@ -29,15 +29,15 @@ public class Npc extends MovableEntity{
     private int cooldown = 0;
     private int pathCooldown = 0;
     private int parameterX,parameterY;
-    private int parameterWidth = 130;
-    private int parameterHeight = 200;
+    private final int parameterWidth = 130;
+    private final int parameterHeight = 200;
     private boolean isDamaged = false;
     private boolean detectedFx = false;
     public boolean isAttacking = false;
     protected java.util.Map<Direction, Direction.TriConsumer<Integer, Integer, Integer>> directionCalculations = new HashMap<>();
     private Camera camera;
-    private SoundEffect npcScreaming = NPC_SCREAMING;
-    private SoundEffect npcAttack = NPC_ATTACK;
+    private final SoundEffect npcScreaming = NPC_SCREAMING;
+    private final SoundEffect npcAttack = NPC_ATTACK;
     private int path;
 
 
@@ -55,10 +55,15 @@ public class Npc extends MovableEntity{
 
     }
 
+    private void load() {
+       spriteSheet = loadNPCimage(SPRITE_PATH, spriteSheet);
+       attackEffect = loadNPCimage(ATTACK_EFFECT_PATH, attackEffect);
+        loadAnimationFrames();
+    }
+
     public void update(Player player) {
         super.update();
         handleAnimationEnemy();
-
         coolDown();
         takeAction(player);
 
@@ -137,6 +142,7 @@ public class Npc extends MovableEntity{
 
 
     public void chase(Player player) {
+        //Pris sur ChatGPT
         int enemyX = this.x;
         int enemyY = this.y;
         int playerX = player.getX();
@@ -162,31 +168,24 @@ public class Npc extends MovableEntity{
     }
 
 
-    public void draw(Canvas canvas, Camera camera, boolean isNear) {
-        int drawX = camera.translateX(x);
-       int drawY = camera.translateY(y);
+    public void draw(Canvas canvas,  boolean isNear) {
 
        if (isNear) {
-           drawHealthEnemy(canvas, x, y);
-           drawEnemyImage(canvas, drawX, drawY);
+           drawHealthEnemy(canvas);
+           drawEnemyImage(canvas);
            canvas.drawString(" " + cooldown, x - 10, y - 10, Color.GREEN);
        } else {
            canvas.drawCircle(x - 32, y - 32, 50, new Color(142, 125, 255, 65));
        }
     }
 
-    public void drawImpact(Canvas canvas, Camera camera) {
-        int drawX = camera.translateX(x);
-        int drawY = camera.translateY(y);
-        canvas.drawImage(spriteImpact, drawX, drawY);
-    }
 
     public void drawAttackEffect(Canvas canvas, Player player) {
         canvas.drawImage(attackEffect, player.getX(), player.getY());
     }
 
 
-    private void drawHealthEnemy(Canvas canvas, int cameraX, int cameraY) {
+    private void drawHealthEnemy(Canvas canvas) {
         canvas.drawHealthNPC(x-7,y-1,52,8,Color.BLACK);
         canvas.drawHealthNPC(x-6,y,50,6,Color.RED);
         canvas.drawHealthNPC(x-6 , y ,this.health, 6, Color.GREEN);
@@ -196,36 +195,16 @@ public class Npc extends MovableEntity{
 
     }
 
-    private void load() {
-        loadSpriteSheet();
-        loadAnimationFrames();
-        loadSpriteImpact();
-        loadAttackEffect();
-    }
-
-    private void loadSpriteSheet() {
+    private BufferedImage loadNPCimage(String path, BufferedImage imageName) {
         try {
-            spriteSheet = ImageIO.read(this.getClass().getClassLoader().getResourceAsStream(SPRITE_PATH));
+            imageName = ImageIO.read(this.getClass().getClassLoader().getResourceAsStream(path));
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
+        return imageName;
     }
 
-    private void loadSpriteImpact() {
-        try {
-            spriteImpact = ImageIO.read(this.getClass().getClassLoader().getResourceAsStream(IMPACT_PATH));
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
-    }
 
-    private void loadAttackEffect() {
-        try {
-            attackEffect = ImageIO.read(this.getClass().getClassLoader().getResourceAsStream(ATTACK_EFFECT_PATH));
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
-    }
 
     protected void loadAnimationFrames() {
         directionFramesMap.put(Direction.DOWN, loadFrames(0));
@@ -260,7 +239,7 @@ public class Npc extends MovableEntity{
         }
     }
 
-    protected void drawEnemyImage(Canvas canvas, int cameraX, int cameraY) {
+    protected void drawEnemyImage(Canvas canvas) {
         Direction direction = getDirection();
         Image[] frames = directionFramesMap.get(direction);
 

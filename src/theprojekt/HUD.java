@@ -14,7 +14,6 @@ public class HUD extends StaticEntity {
     private int healthBarX;
     private int healthBarY;
     private int playerHealth;
-    private static final String alertPath = "src/theprojekt/Assets/Alert.png";
     private static final String knifePath = "images/knife.png";
     private static final String hudTexturePath = "images/hudTexture.png";
     private static final String hudDetectedPath = "images/hudDetected2.png";
@@ -22,7 +21,6 @@ public class HUD extends StaticEntity {
     private Image hudTexturePanel;
     private Image hudDetectedTexture;
     private RessourceLoader ressourceLoader;
-
     private Font customFont;
     private int gameOverY = 100;
     private Player player;
@@ -65,7 +63,7 @@ public class HUD extends StaticEntity {
 
 
 
-    public void drawHealthBar(Canvas canvas, Player player) {
+    public void drawHealthBar(Canvas canvas) {
         healthBarX = screen.getWidth()+10;
         healthBarY = screen.getHeight()+10;
         canvas.drawRectangle(healthBarX-2, healthBarY-2, 104, 24, Color.WHITE);
@@ -73,17 +71,13 @@ public class HUD extends StaticEntity {
         canvas.drawRectangle(healthBarX, healthBarY, playerHealth, 20, Color.GREEN);
     }
 
-    public  void drawKnifeMunition(Canvas canvas, Player player) {
+    public  void drawKnifeMunition(Canvas canvas) {
         int knifeMunitionX = screen.getWidth()+10;
         int knifeMunitionY = screen.getHeight()+50;
         canvas.drawInfo("Knife : " + knifeMunition , knifeMunitionX, knifeMunitionY, Color.WHITE, customFont, 10);
         canvas.drawImage(knifeImage , knifeMunitionX, knifeMunitionY + 10);
     }
 
-    public void drawAlert(Canvas canvas) {
-        canvas.drawString("You've been detected", 400, 400, Color.RED);
-       // canvas.drawImage(alert, 1000, 1000);
-    }
 
 
     public void hudTexture(Canvas canvas, MovableEntity player) {
@@ -114,14 +108,6 @@ public class HUD extends StaticEntity {
     }
 
 
-
-
-    public void drawPauseMenu(Canvas canvas, boolean paused) {
-        if (paused) {
-        canvas.drawInfo(" P A U S E ", 160, 300, Color.WHITE, customFont, 60);
-        }
-    }
-
     public void drawGameOver(Canvas canvas) {
         canvas.drawInfo("G A M E  O V E R", 130, gameOverY, Color.RED, customFont, 60);
         gameOverY += 100;
@@ -129,7 +115,7 @@ public class HUD extends StaticEntity {
 
     @Override
     public void draw(Canvas canvas) {
-        drawHealthBar(canvas,player);
-        drawKnifeMunition(canvas,player);
+        drawHealthBar(canvas);
+        drawKnifeMunition(canvas);
     }
 }
