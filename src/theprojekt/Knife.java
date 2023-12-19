@@ -35,7 +35,6 @@ public class Knife extends MovableEntity {
     public void update() {
         currentSpeed -= acceleration;
 
-        // Move the knife based on the current speed and player's direction
         if (playerDirection == Direction.RIGHT) {
             x += (int) currentSpeed;
         } else if (playerDirection == Direction.LEFT) {
@@ -45,12 +44,9 @@ public class Knife extends MovableEntity {
         } else if (playerDirection == Direction.UP) {
             y -= (int) currentSpeed;
         }
-
-
         if (currentSpeed <= 0) {
             currentSpeed = 0;
         }
-
     }
 
     public boolean isOutOfBounds() {
@@ -63,24 +59,14 @@ public class Knife extends MovableEntity {
     @Override
     public void draw(Canvas canvas) {
         Graphics2D g2d = canvas.getGraphics();
-
         AffineTransform originalTransform = g2d.getTransform();
 
-        double rotationAngle = 0.0;
-        switch (playerDirection) {
-            case RIGHT:
-                rotationAngle =  Math.PI / 2;
-                break;
-            case LEFT:
-                rotationAngle = -Math.PI / 2;
-                break;
-            case DOWN:
-                rotationAngle = Math.PI;
-                break;
-            case UP:
-                rotationAngle = 0.0;
-                break;
-        }
+        double rotationAngle = switch (playerDirection) {
+            case RIGHT -> Math.PI / 2;
+            case LEFT -> -Math.PI / 2;
+            case DOWN -> Math.PI;
+            case UP -> 0.0;
+        };
         g2d.rotate(rotationAngle, x + getWidth() / 2, y + getHeight() / 2);
         g2d.drawImage(image, x, y, null);
         g2d.setTransform(originalTransform);

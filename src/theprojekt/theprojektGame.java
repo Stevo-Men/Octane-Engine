@@ -6,6 +6,7 @@ import doctrina.*;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,14 +31,14 @@ public class theprojektGame extends Game {
     protected void initialize() {
         gamePad = new GamePad();
         player = new Player(gamePad);
-        player.teleport(390, 400);
+        player.teleport(100, 500);
         map = new Map();
         map.load();
         camera = new Camera();
         npcs = new ArrayList<>();
-        npcs.add(new Npc(200, 200));
-        npcs.add(new Npc(800, 400));
-        npcs.add(new Npc(100, 100));
+        npcs.add(new Npc(100, 300,false));
+        npcs.add(new Npc(800, 400,true));
+        npcs.add(new Npc(100, 100,true));
         hud = new HUD();
         knives = new ArrayList<>();
         blockadeMap = new BlockadeMap(0, 0);
@@ -88,9 +89,12 @@ public class theprojektGame extends Game {
 
         for (Npc npc : npcs) {
             if (npc.canAttack(player)) {
+                npc.isAttacking = true;
                 npc.attack(player);
-
+            } else {
+                npc.isAttacking = false;
             }
+
             npc.update(player);
         }
 
@@ -104,6 +108,8 @@ public class theprojektGame extends Game {
                 if (knife.hitBoxIntersectWith(npc)) {
                     killedElements.add(knife);
                     npc.isTouched(knife);
+                    npc.isTouched();
+
                     if (npc.getHealth() <= 0) {
                         killedElements.add(npc);
                     }
@@ -141,30 +147,34 @@ public class theprojektGame extends Game {
 
     @Override
     protected void draw(Canvas canvas) {
-        if (player.stillAlive()) {
-            hud.drawGameOver(canvas);
-        }
+
 
         map.draw(canvas,camera);
-
         for (StaticEntity blockade : blockadeMaps) {
             blockade.draw(canvas);
         }
         blockadeMap.draw(canvas);
 
         for (Npc npc : npcs) {
-            npc.draw(canvas,camera);
+            npc.draw(canvas, camera, npc.getBounds().intersects(player.playerVision.getBounds2D()));
+
+            if (npc.isAttacking) {
+                npc.drawAttackEffect(canvas,player);
+            }
         }
 
         for (Knife knife : knives) {
             knife.draw(canvas);
         }
+        if (player.stillAlive()) {
 
-        player.draw(canvas);
-        hud.draw(canvas);
-        hud.hudTexture(canvas, player);
+            player.draw(canvas);
+            hud.draw(canvas);
+            hud.hudTexture(canvas, player);
+        } else {
 
-
+           hud.drawGameOver(canvas);
+        }
 
     }
 }

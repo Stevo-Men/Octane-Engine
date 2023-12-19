@@ -22,12 +22,12 @@ public class HUD extends StaticEntity {
     private Image hudTexturePanel;
     private Image hudDetectedTexture;
     private RessourceLoader ressourceLoader;
+
     private Font customFont;
-    private Graphics graphics;
+    private int gameOverY = 100;
     private Player player;
     private Camera camera;
     private boolean detected = false;
-
     private int knifeMunition;
 
     public HUD() {
@@ -45,7 +45,7 @@ public class HUD extends StaticEntity {
                     this.getClass().getClassLoader().getResourceAsStream(imagePath));
         } catch (IOException exception) {
             System.out.println(exception.getMessage());
-            return null; // Handle the exception accordingly in your application
+            return null;
         }
     }
 
@@ -74,7 +74,6 @@ public class HUD extends StaticEntity {
     }
 
     public  void drawKnifeMunition(Canvas canvas, Player player) {
-
         int knifeMunitionX = screen.getWidth()+10;
         int knifeMunitionY = screen.getHeight()+50;
         canvas.drawInfo("Knife : " + knifeMunition , knifeMunitionX, knifeMunitionY, Color.WHITE, customFont, 10);
@@ -93,43 +92,24 @@ public class HUD extends StaticEntity {
         int playerY = player.getY();
 
         Graphics2D g2d = canvas.getGraphics();
-
         float opacity = 0.3f;
         AlphaComposite alphaComposite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, opacity);
         g2d.setComposite(alphaComposite);
 
-        // Create a circular shape centered around the player
-        // Create an ellipse centered around the player
-        int ellipseRadiusX = 40; // Adjust the X-axis radius as needed
-        int ellipseRadiusY = 40; // Adjust the Y-axis radius as needed
-        Ellipse2D ellipse = new Ellipse2D.Float(playerX - 22, playerY - 22, 2 * ellipseRadiusX, 2 * ellipseRadiusY);
+        int ellipseRadiusX = 60;
+        int ellipseRadiusY = 60;
 
-        // Create a rectangular shape representing the HUD area
+        Ellipse2D ellipse = new Ellipse2D.Float(playerX - 44, playerY - 44, 2 * ellipseRadiusX, 2 * ellipseRadiusY);
         Rectangle rect = new Rectangle(-30, -15, 972, 610);
-
-        // Create an Area representing the difference between the rectangle and the circle
         Area area = new Area(rect);
-
-
         area.subtract(new Area(ellipse));
-
-
         g2d.setClip(area);
-
-        // Fill the area with the desired HUD texture (background)
-
         if (detected) {
             g2d.drawImage(hudDetectedTexture, -30, -15, 972, 610, null);
         } else {
             g2d.drawImage(hudTexturePanel, -30, -15, 972, 610, null);
         }
-
-
         g2d.setClip(ellipse);
-
-
-
-        // Dispose of the graphics context to release resources
         g2d.dispose();
     }
 
@@ -143,13 +123,13 @@ public class HUD extends StaticEntity {
     }
 
     public void drawGameOver(Canvas canvas) {
-        canvas.drawInfo("G A M E  O V E R", 160, 300, Color.RED, customFont, 60);
+        canvas.drawInfo("G A M E  O V E R", 130, gameOverY, Color.RED, customFont, 60);
+        gameOverY += 100;
     }
 
     @Override
     public void draw(Canvas canvas) {
         drawHealthBar(canvas,player);
         drawKnifeMunition(canvas,player);
-
     }
 }

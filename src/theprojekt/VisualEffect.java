@@ -24,9 +24,13 @@ public class VisualEffect {
     protected Map<Direction, Direction.TriConsumer<Integer, Integer, Integer>> directionCalculations = new HashMap<>();
 
 
+
+    private Ellipse2D circle;
+
     public VisualEffect(Player player) {
         camera = new Camera();
         this.player = player;
+        circle = new Ellipse2D.Float(player.getX() - 45, player.getY() - 45, 130, 130);
     }
 
 
@@ -81,7 +85,7 @@ public class VisualEffect {
         Rectangle rect = new Rectangle(drawX, drawY, canvasWidth, canvasHeight);
         Ellipse2D ovalVertical = new Ellipse2D.Float(lightX, lightY, lightWidth, lightHeight);
         Ellipse2D ovalHorizontal = new Ellipse2D.Float(lightX, lightY, lightHeight, lightWidth);
-        Ellipse2D circle = new Ellipse2D.Float(player.getX() - 32, player.getY() - 32, 100, 100);
+         circle = new Ellipse2D.Float(player.getX() - 30, player.getY() - 30, 90, 90);
 
         Area area = new Area(rect);
 
@@ -100,7 +104,7 @@ public class VisualEffect {
         graphics.setColor(Color.BLACK);
         graphics.fill(area);
     }
-
-
-
+    public Ellipse2D getCircle() {
+        return circle;
+    }
 }

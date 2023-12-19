@@ -10,6 +10,7 @@ public enum SoundEffect {
     KNIFE_THROW("audios/throwingKnifeFx.wav", 100),
     GAMEOVER_FX("audios/gameOverFX.wav", 100),
     DASH_FX("audios/dashFx.wav", 100),
+    NPC_ATTACK("audios/npcAttack.wav", 100),
     NPC_SCREAMING("audios/npcScreaming.wav", 100);
 
     private int maxCooldown;

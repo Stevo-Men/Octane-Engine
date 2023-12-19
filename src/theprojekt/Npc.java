@@ -9,22 +9,19 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.HashMap;
 
+import static theprojekt.SoundEffect.NPC_ATTACK;
 import static theprojekt.SoundEffect.NPC_SCREAMING;
 
 public class Npc extends MovableEntity{
 
     private static final String SPRITE_PATH = "images/enemy1.png";
-    private static final String ATTACK_PATH = "images/enemyAttacking.png";
-    private static final String ATTACK_PATH = "images/enemyAttacking.png";
+    private static final String ATTACK_EFFECT_PATH = "images/enemy_Attack.png";
+    private static final String IMPACT_PATH = "images/enemy_impact.png";
     private static final int ANIMATION_SPEED = 8;
     protected java.util.Map<Direction, Image[]> directionFramesMap = new HashMap<>();
-    private static final String IMPACT_PATH = "images/impact_enemy.png";
-    private List impactFrames;
-    private int impactAnimationFrame = 0;
-    private boolean isImpacting = false;
-
+    private BufferedImage spriteImpact;
     private BufferedImage spriteSheet;
-    private BufferedImage attackSheet;
+    private BufferedImage attackEffect;
     private int currentAnimationFrame = 1;
     private int nextFrame = ANIMATION_SPEED;
     private int pathNumber = 1;
@@ -35,25 +32,27 @@ public class Npc extends MovableEntity{
     private int parameterY;
     private int parameterWidth = 130;
     private int parameterHeight = 200;
-    private boolean isDead = false;
+    private boolean isDamaged = false;
     private boolean detectedFx = false;
-    private boolean isAttacking = false;
+    public boolean isAttacking = false;
     protected java.util.Map<Direction, Direction.TriConsumer<Integer, Integer, Integer>> directionCalculations = new HashMap<>();
     private Camera camera;
-    private SoundEffect soundEffect = NPC_SCREAMING;
+    private SoundEffect npcScreaming = NPC_SCREAMING;
+    private SoundEffect npcAttack = NPC_ATTACK;
+    private boolean path;
 
 
 
 
-
-    public Npc(int x, int y) {
+    public Npc(int x, int y, boolean path) {
         this.x = x;
         this.y = y;
+        this.path = path;
         setSpeed(1);
         setDimension(32, 32);
         camera = new Camera();
         load();
-       // loadImpactFrames();
+
 
     }
 
@@ -67,11 +66,9 @@ public class Npc extends MovableEntity{
 
         cooldown--;
         pathCooldown--;
-        isAttacking = false;
         if (cooldown < 0) {
             cooldown = 0;
         }
-
 
 
         handleAnimationEnemy();
@@ -81,13 +78,18 @@ public class Npc extends MovableEntity{
             setSpeed(2);
             player.detectedState = true;
             chase(player);
-            soundEffect.play();
+            npcScreaming.play();
 
-        } else {
+        } else if (path) {
             setSpeed(1);
             player.detectedState = false;
             trajectory();
+        } else {
+            setSpeed(1);
+            player.detectedState = false;
+
         }
+
     }
 
 
@@ -127,7 +129,6 @@ public class Npc extends MovableEntity{
 
 
 
-
     public void chase(Player player) {
         int enemyX = this.x;
         int enemyY = this.y;
@@ -154,18 +155,27 @@ public class Npc extends MovableEntity{
     }
 
 
-    public void draw(Canvas canvas, Camera camera) {
+    public void draw(Canvas canvas, Camera camera, boolean isNear) {
         int drawX = camera.translateX(x);
        int drawY = camera.translateY(y);
 
-        drawHealthEnemy(canvas,x,y);
-        drawEnemyImage(canvas, drawX,drawY);
-        canvas.drawString(" " + cooldown, x - 10, y - 10,Color.GREEN);
-//        canvas.drawRectangle(x  , y, width, height, new Color(255, 226, 40, 20));
-//        canvas.drawRectangle(getBounds().x, getBounds().y, this.getBounds().width, getBounds().height, new Color(40, 255, 86, 20));
-//        canvas.drawString(" " + x + " " + y ,x ,y ,Color.RED);
-//        canvas.drawString(" " + pathCooldown, x - 10, y - 10,Color.GREEN);
-//        canvas.drawString(" " + pathNumber, x - 20, y - 20,Color.GREEN);
+       if (isNear) {
+           drawHealthEnemy(canvas, x, y);
+           drawEnemyImage(canvas, drawX, drawY);
+           canvas.drawString(" " + cooldown, x - 10, y - 10, Color.GREEN);
+       } else {
+           canvas.drawCircle(x - 32, y - 32, 50, new Color(142, 125, 255, 65));
+       }
+    }
+
+    public void drawImpact(Canvas canvas, Camera camera) {
+        int drawX = camera.translateX(x);
+        int drawY = camera.translateY(y);
+        canvas.drawImage(spriteImpact, drawX, drawY);
+    }
+
+    public void drawAttackEffect(Canvas canvas, Player player) {
+        canvas.drawImage(attackEffect, player.getX(), player.getY());
     }
 
 
@@ -182,7 +192,8 @@ public class Npc extends MovableEntity{
     private void load() {
         loadSpriteSheet();
         loadAnimationFrames();
-        loadSpriteDeath();
+        loadSpriteImpact();
+        loadAttackEffect();
     }
 
     private void loadSpriteSheet() {
@@ -193,9 +204,17 @@ public class Npc extends MovableEntity{
         }
     }
 
-    private void loadSpriteDeath() {
+    private void loadSpriteImpact() {
         try {
-            spriteDeath = ImageIO.read(this.getClass().getClassLoader().getResourceAsStream(SPRITE_DEATH_PATH));
+            spriteImpact = ImageIO.read(this.getClass().getClassLoader().getResourceAsStream(IMPACT_PATH));
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private void loadAttackEffect() {
+        try {
+            attackEffect = ImageIO.read(this.getClass().getClassLoader().getResourceAsStream(ATTACK_EFFECT_PATH));
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
@@ -254,14 +273,21 @@ public class Npc extends MovableEntity{
     }
 
     public void attack(Player player) {
-        isAttacking = true;
-        cooldown = 25;
+        cooldown = 40;
         player.playerHealth -= 10;
+        npcAttack.play();
     }
 
     public void isTouched(Knife knife) {
         this.health -= knife.damage;
+        isTouched();
     }
+
+    public boolean isTouched() {
+        return isDamaged;
+    }
+
+
 
 
     public Rectangle parameterDirection() {

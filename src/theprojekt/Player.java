@@ -5,6 +5,7 @@ import doctrina.Canvas;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.HashMap;
@@ -23,7 +24,7 @@ public class Player extends ControllableEntity {
     Camera camera;
     private VisualEffect visualEffect;
     private AnimatedEntity animatedEntity;
-    int knifeMunition = 5;
+    int knifeMunition = 10;
     public int playerHealth = 100;
     private int cooldown = 0;
     private boolean isAlive = true;
@@ -35,6 +36,7 @@ public class Player extends ControllableEntity {
     private int dashCooldown = 50;
        private int dashTimer = 0;
     private int currentSpeed = 5;
+    public Ellipse2D playerVision;
 
     public Player(MovementController controller) {
         super(controller);
@@ -43,6 +45,7 @@ public class Player extends ControllableEntity {
         camera = new Camera();
         visualEffect = new VisualEffect(this);
         animatedEntity = new AnimatedEntity(SPRITE_PATH,this.getWidth(),this.getHeight());
+
         load();
     }
 
@@ -71,12 +74,9 @@ public class Player extends ControllableEntity {
 
     public void dash() {
 
-
-
-       if (isDashing) {
+        if (isDashing) {
         float dashProgress = (float) 100 / dashDuration;
 
-        // Move the player based on the current speed and player's direction
         if (getDirection() == Direction.RIGHT) {
             x += (int) (currentSpeed * dashProgress);
         } else if (getDirection() == Direction.LEFT) {
@@ -86,7 +86,6 @@ public class Player extends ControllableEntity {
         } else if (getDirection() == Direction.UP) {
             y -= (int) (currentSpeed * dashProgress);
         }
-
         dashTimer++;
 
             if (dashTimer >= 10) {
@@ -103,7 +102,7 @@ public class Player extends ControllableEntity {
 
         moveWithController();
         animatedEntity.update(this);
-
+        playerVision = visualEffect.getCircle();
         dashCooldown--;
         if (dashCooldown < 0) {
             dashCooldown = 0;

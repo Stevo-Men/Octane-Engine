@@ -17,15 +17,12 @@ public class AnimatedEntity extends MovableEntity{
     private final int ANIMATION_SPEED = 8;
     private int nextFrame = ANIMATION_SPEED;
 
-
     protected Map<Direction, Image[]> directionFramesMap = new HashMap<>();
 
     protected int x;
     protected int y;
     protected int width;
     protected int height;
-    protected int speed;
-    private Player player;
 
     public AnimatedEntity(String spritePath,  int width, int height) {
         this.width = width;
@@ -73,7 +70,7 @@ public class AnimatedEntity extends MovableEntity{
     }
 
     protected void drawCharacterImage(Canvas canvas, int translatedX, int translatedY, MovableEntity entity) {
-        Direction direction = entity.getDirection();  // Change as needed
+        Direction direction = entity.getDirection();
         Image[] frames = directionFramesMap.get(direction);
 
         if (frames != null) {
