@@ -66,15 +66,15 @@ public class HUD extends StaticEntity {
     public void drawHealthBar(Canvas canvas) {
         healthBarX = screen.getWidth()+10;
         healthBarY = screen.getHeight()+10;
-        canvas.drawRectangle(healthBarX-2, healthBarY-2, 104, 24, Color.WHITE);
-        canvas.drawRectangle(healthBarX, healthBarY, 100, 20, Color.RED);
-        canvas.drawRectangle(healthBarX, healthBarY, playerHealth, 20, Color.GREEN);
+        canvas.drawRectangle(healthBarX-4, healthBarY-2, playerHealth*2+4, 24, Color.WHITE);
+        canvas.drawRectangle(healthBarX, healthBarY, playerHealth*2+4, 20, Color.RED);
+        canvas.drawRectangle(healthBarX, healthBarY, playerHealth*2, 20, Color.GREEN);
     }
 
     public  void drawKnifeMunition(Canvas canvas) {
         int knifeMunitionX = screen.getWidth()+10;
         int knifeMunitionY = screen.getHeight()+50;
-        canvas.drawInfo("Knife : " + knifeMunition , knifeMunitionX, knifeMunitionY, Color.WHITE, customFont, 10);
+        canvas.drawInfo("AMMO : " + knifeMunition , knifeMunitionX, knifeMunitionY, Color.WHITE, customFont, 16);
         canvas.drawImage(knifeImage , knifeMunitionX, knifeMunitionY + 10);
     }
 
@@ -109,8 +109,19 @@ public class HUD extends StaticEntity {
 
 
     public void drawGameOver(Canvas canvas) {
-        canvas.drawInfo("G A M E  O V E R", 130, gameOverY, Color.RED, customFont, 60);
-        gameOverY += 100;
+        canvas.drawInfo("G A M E  O V E R", 20, 100, new Color(189, 0, 0, 255), customFont, 50);
+        canvas.drawInfo("G A M E  O V E R", 20, 200, new Color(189, 0, 0, 211), customFont, 50);
+        canvas.drawInfo("G A M E  O V E R", 20, 300, new Color(189, 0, 0, 173), customFont, 50);
+        canvas.drawInfo("G A M E  O V E R", 20, 400, new Color(121, 0, 0, 147), customFont, 50);
+        canvas.drawInfo("G A M E  O V E R", 20, 500, new Color(52, 0, 0, 142), customFont, 50);
+    }
+
+    public void drawWin(Canvas canvas) {
+        canvas.drawInfo("L E V E L  C L E A R E D", 20, 100, Color.ORANGE, customFont, 45);
+        canvas.drawInfo("L E V E L  C L E A R E D", 20, 200, Color.ORANGE, customFont, 45);
+        canvas.drawInfo("L E V E L  C L E A R E D", 20, 300, Color.ORANGE, customFont, 45);
+        canvas.drawInfo("L E V E L  C L E A R E D", 20, 400, Color.ORANGE, customFont, 45);
+        canvas.drawInfo("L E V E L  C L E A R E D", 20, 500, Color.ORANGE, customFont, 45);
     }
 
     @Override

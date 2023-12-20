@@ -14,8 +14,6 @@ import java.util.Map;
 public class VisualEffect {
     private Camera camera;
     private Player player;
-    private Canvas canvas;
-
     private int lightX;
     private int lightY;
     private int lightWidth = 25;

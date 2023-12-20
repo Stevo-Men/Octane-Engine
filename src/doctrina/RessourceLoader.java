@@ -11,7 +11,6 @@ import java.io.InputStream;
 public class RessourceLoader {
 
     private static final String SPRITE_PATH = "/font/AKONY.ttf";
-    private static final String IMPACT_ENEMY = "/images/impact_enemy.gif";
 
     public Font loadFont(float fontSize) {
         try {

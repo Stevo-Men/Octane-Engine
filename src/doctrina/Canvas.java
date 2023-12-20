@@ -34,13 +34,8 @@ public class Canvas {
 
     public void drawInfo(String text, int x, int y, Paint paint, Font customFont, int fontSize) {
         customFont = ressourceLoader.loadFont(fontSize);
-
         graphics.setFont(customFont);
-
-        // Set paint color
         graphics.setPaint(paint);
-
-        // Draw the string
         graphics.drawString(text, x, y);
     }
 

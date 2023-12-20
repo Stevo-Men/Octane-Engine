@@ -23,6 +23,7 @@ public class theprojektGame extends Game {
     private BlockadeMap blockadeMap;
     private final SoundEffect gameOverFx = SoundEffect.GAMEOVER_FX;
     private final SoundEffect dashFx = SoundEffect.DASH_FX;
+    private final SoundEffect murlocFx = SoundEffect.MURLOC_FX;
 
     @Override
     protected void initialize() {
@@ -44,10 +45,10 @@ public class theprojektGame extends Game {
         npcs.add(new Npc(750, 170,2));
         npcs.add(new Npc(460, 160,0));
         chests = new ArrayList<>();
-        chests.add(new Chest(100, 400, 10, 100));
-        chests.add(new Chest(150, 160, 10, 100));
-        chests.add(new Chest(450, 360, 10, 100));
-        chests.add(new Chest(460, 60, 10, 100));
+        chests.add(new Chest(100, 400, 10, 0));
+        chests.add(new Chest(150, 160, 10, 20));
+        chests.add(new Chest(450, 360, 10, 50));
+        chests.add(new Chest(460, 60, 10, 40));
         hud = new HUD();
         knives = new ArrayList<>();
         blockadeMap = new BlockadeMap(0, 0);
@@ -85,6 +86,9 @@ public class theprojektGame extends Game {
 
         if (gamePad.isAttackPressed() && player.canThrow()) {
             knives.add(player.throwKnife());
+        }
+        if (gamePad.isAttackPressed() && player.knifeMunition == 0) {
+            murlocFx.play();
         }
         if (gamePad.isShiftPressed() && player.canDash()) {
            player.dash();
@@ -155,7 +159,7 @@ public class theprojektGame extends Game {
     protected void draw(Canvas canvas) {
 
 
-        map.draw(canvas,camera);
+        map.draw(canvas);
         for (StaticEntity blockade : blockadeMaps) {
             blockade.draw(canvas);
         }
@@ -183,9 +187,12 @@ public class theprojektGame extends Game {
         if (player.stillAlive()) {
             player.draw(canvas);
             hud.draw(canvas);
-            player.drawDebuginfo(canvas);
+            //player.drawDebuginfo(canvas);
             hud.hudTexture(canvas, player);
-        } else {
+        } else if (npcs.isEmpty()) {
+            hud.drawWin(canvas);
+        }
+        else {
            hud.drawGameOver(canvas);
         }
 

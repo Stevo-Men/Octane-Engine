@@ -14,22 +14,15 @@ import java.util.Map;
 public class Player extends ControllableEntity {
 
     private static final String SPRITE_PATH = "images/player2.png";
-
-    protected Map<Direction, Image[]> directionFramesMap = new HashMap<>();
-
-
-    private int currentAnimationFrame = 1;
-    private final int ANIMATION_SPEED = 8;
-    private int nextFrame = ANIMATION_SPEED;
     Camera camera;
     private VisualEffect visualEffect;
     private AnimatedEntity animatedEntity;
     int knifeMunition = 10;
-    public int playerHealth = 1000;
+    public  int playerHealth = 100;
     private int cooldown = 0;
     private boolean isAlive = true;
     public boolean detectedState = false;
-    protected final int maxHealth = 100;
+    protected final int maxHealth = 125;
     private SoundEffect soundEffect;
     private boolean isDashing = false;
     private int dashDuration = 50;
@@ -45,7 +38,6 @@ public class Player extends ControllableEntity {
         camera = new Camera();
         visualEffect = new VisualEffect(this);
         animatedEntity = new AnimatedEntity(SPRITE_PATH,this.getWidth(),this.getHeight());
-
         load();
     }
 

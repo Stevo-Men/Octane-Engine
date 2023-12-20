@@ -13,7 +13,6 @@ import java.util.ArrayList;
 public abstract class CSVReader {
 
     private static final int GRID_SIZE = 64;
-
     private static final int BLOCKADE_VALUE = 1;
     private static final int EMPTY_VALUE = 0;
 
@@ -22,18 +21,14 @@ public abstract class CSVReader {
 
 
     public void readBlockadeFromCSV(String csvFile,ArrayList<ArrayList<Integer>> blockade2DGrid) {
-
         try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
             String line = br.readLine();
-
             while (line != null) {
                 String[] attributes = line.split(",");
                 createBlockade(attributes, blockade2DGrid);
                 line = br.readLine();
             }
-
         } catch (IOException ioe) {
-            // Handle the exception, e.g., print an error message or log it.
             ioe.printStackTrace();
         }
 
@@ -50,9 +45,6 @@ public abstract class CSVReader {
             } else if (metadata[i].equals("-1")) {
                 row.add(EMPTY_VALUE);
             }
-
-
-
         }
         blockade2DGrid.add(row);
     }

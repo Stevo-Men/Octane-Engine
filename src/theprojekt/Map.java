@@ -18,13 +18,7 @@ public class Map {
     private Camera camera;
 
 
-//    public Map() {
-//        mapX = 0;
-//        mapY = 0;
-//        mapWidth =  1024;
-//        mapHeight = 1024;
-//        camera = new Camera();
-//    }
+
     public void load() {
         try {
             background = ImageIO.read(
@@ -46,12 +40,7 @@ public class Map {
 
 
 
-    public void draw(Canvas canvas, Camera camera) {
-        // Adjust the drawing position based on the camera's position
-        int drawX = camera.translateX(mapX);
-        int drawY = camera.translateY(mapY);
-
-        // Draw the background at the adjusted position
+    public void draw(Canvas canvas) {
         canvas.drawImage(background, drawX, drawY);
     }
 

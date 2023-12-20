@@ -4,7 +4,7 @@ import javax.sound.sampled.*;
 
 public enum SoundEffect {
 
-    MURLOC("audios/murloc.wav", 100),
+    MURLOC_FX("audios/murloc.wav", 100),
     DETECTED_FX("audios/detected_FX.wav", 100),
     DRONE_AMBIENT("audios/droneAmbient.wav", 100),
     KNIFE_THROW("audios/throwingKnifeFx.wav", 100),
